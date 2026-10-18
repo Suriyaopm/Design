@@ -1,0 +1,1628 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Marudham College Website</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700;6..12,800&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: classic Indian college site — utility bar, crest masthead, maroon menu bar, gold admissions strip; full-bleed photo slider, then centred section heads with a gold rule over a 1200px column. */
+:root{
+  --bg:#FFFDF9; --surface:#FFFFFF; --soft:#F8F0E7; --ink:#2B1A1D; --muted:#6F5C5F; --line:#EBDFD5;
+  --band:#7B1C2A; --band-deep:#561320; --on-band:#FFF7F0; --on-band-muted:#E9C9C6;
+  --brand:#7B1C2A; --accent:#D9A21B; --accent-soft:#FBF0D3; --on-accent:#2A1A05; --accent-ink:#9A6B00;
+  --ok:#23704A; --warn:#A35D00; --scrim:rgb(30 8 12 / .62);
+  --display:"Libre Caslon Text", Georgia, "Times New Roman", serif;
+  --crest:"Cinzel", "Libre Caslon Text", Georgia, serif;
+  --body:"Nunito Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, Consolas, monospace;
+  --r:12px; --shadow:0 1px 2px rgb(60 20 25 / .06), 0 12px 32px -14px rgb(60 20 25 / .25);
+  --nav-h:54px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#140C0E; --surface:#1E1416; --soft:#2A1C1F; --ink:#F4EAE7; --muted:#BFA9A8; --line:#3A282B;
+  --band:#5E1624; --band-deep:#3C0D17; --on-band:#FFF4EE; --on-band-muted:#D7B3B1;
+  --brand:#F2A7B1; --accent:#E8B84A; --accent-soft:#33260F; --on-accent:#221503; --accent-ink:#E8B84A;
+  --ok:#6FCB98; --warn:#E6A84A; --scrim:rgb(10 3 5 / .7);
+  --shadow:0 1px 2px rgb(0 0 0 / .3), 0 14px 34px -14px rgb(0 0 0 / .7); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#140C0E; --surface:#1E1416; --soft:#2A1C1F; --ink:#F4EAE7; --muted:#BFA9A8; --line:#3A282B;
+  --band:#5E1624; --band-deep:#3C0D17; --on-band:#FFF4EE; --on-band-muted:#D7B3B1;
+  --brand:#F2A7B1; --accent:#E8B84A; --accent-soft:#33260F; --on-accent:#221503; --accent-ink:#E8B84A;
+  --ok:#6FCB98; --warn:#E6A84A; --scrim:rgb(10 3 5 / .7);
+  --shadow:0 1px 2px rgb(0 0 0 / .3), 0 14px 34px -14px rgb(0 0 0 / .7); color-scheme:dark}
+
+/* base reset (also makes the file work when opened directly) */
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6;overflow-x:hidden}
+img{max-width:100%;display:block}
+h1,h2,h3,h4{font-family:var(--display);font-weight:400;line-height:1.2;margin:0;text-wrap:balance}
+h1{font-size:clamp(2rem,4.4vw,3.5rem)} h2{font-size:clamp(1.6rem,3vw,2.3rem)} h3{font-size:1.25rem} h4{font-size:1.05rem}
+p{margin:0} a{color:var(--brand)} ul{margin:0;padding:0}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2.5px solid var(--accent);outline-offset:2px;border-radius:4px}
+.wrap{max-width:1220px;margin-inline:auto;padding-inline:20px}
+.eyebrow{font-family:var(--mono);font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-ink);font-weight:500}
+.muted{color:var(--muted)}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.stack{display:flex;flex-direction:column;gap:12px}
+.section{padding-block:76px}
+.section.alt{background:var(--soft)}
+[id^="ab-"],[id^="ad-"],[id^="al-"]{scroll-margin-top:calc(var(--nav-h) + 70px)}
+.lede{font-size:1.08rem;color:var(--muted);max-width:64ch}
+.ico{width:20px;height:20px;flex:none;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* centred college-style section head */
+.shead{text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:40px}
+.shead .lede{margin-inline:auto}
+.rule{display:flex;align-items:center;gap:10px;color:var(--accent)}
+.rule::before,.rule::after{content:"";width:46px;height:2px;background:currentColor;border-radius:2px}
+.rule i{width:9px;height:9px;transform:rotate(45deg);background:currentColor;display:block}
+.shead.left{text-align:left;align-items:flex-start}
+.shead.left .lede{margin-inline:0}
+.shead-row{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:32px}
+.shead-row .shead{margin-bottom:0}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 22px;border-radius:8px;border:1.5px solid transparent;font-weight:700;font-size:.95rem;cursor:pointer;text-decoration:none;transition:transform .15s, background .15s, border-color .15s, box-shadow .15s;white-space:nowrap;line-height:1.2}
+.btn:hover{transform:translateY(-1px);box-shadow:var(--shadow)}
+.btn-accent{background:var(--accent);color:var(--on-accent)}
+.btn-brand{background:var(--band);color:var(--on-band)}
+.btn-ghost{border-color:var(--line);background:var(--surface);color:var(--ink)}
+.btn-ghost:hover{border-color:var(--brand)}
+.btn-light{border-color:rgb(255 255 255 / .7);color:#fff;background:rgb(255 255 255 / .08)}
+.btn-light:hover{background:rgb(255 255 255 / .18)}
+.btn-sm{padding:8px 14px;font-size:.85rem}
+.link{font-weight:700;text-decoration:none;color:var(--brand);display:inline-flex;gap:6px;align-items:center;background:none;border:0;padding:0;cursor:pointer}
+.link:hover{text-decoration:underline;text-underline-offset:3px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:24px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-size:.78rem;font-weight:700;background:var(--soft);color:var(--brand);white-space:nowrap}
+.chip.gold{background:var(--accent-soft);color:var(--accent-ink)}
+.grid{display:grid;gap:22px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media (max-width:980px){.g4{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:640px){.g2,.g3,.g4{grid-template-columns:minmax(0,1fr)}.section{padding-block:56px}}
+
+/* ---------- Top bar ---------- */
+.topbar{background:var(--band-deep);color:var(--on-band-muted);font-size:.82rem}
+.topbar .wrap{display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:38px;flex-wrap:wrap}
+.topbar .row{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.topbar a{color:var(--on-band);text-decoration:none}
+.topbar a:hover{color:var(--accent)}
+.topbar .ti{display:inline-flex;gap:6px;align-items:center}
+.topbar .ico{width:15px;height:15px;color:var(--accent)}
+.theme-btn{background:none;border:1px solid rgb(255 255 255 / .25);color:var(--on-band);border-radius:999px;padding:3px 10px;display:inline-flex;gap:6px;align-items:center;cursor:pointer;font-size:.78rem}
+@media (max-width:760px){.topbar .hide-sm{display:none}}
+
+/* ---------- Masthead ---------- */
+.masthead{background:var(--surface);border-bottom:1px solid var(--line)}
+.masthead .wrap{display:flex;align-items:center;gap:22px;padding-block:16px}
+.brandmark{display:flex;align-items:center;gap:16px;text-decoration:none;color:var(--ink);margin-right:auto;min-width:0}
+.brandmark svg{width:64px;height:72px;flex:none}
+.brandmark .nm{font-family:var(--crest);font-weight:700;font-size:clamp(1.15rem,2.4vw,1.75rem);line-height:1.1;color:var(--brand);letter-spacing:.02em;display:block}
+.brandmark .sub{display:block;font-size:.84rem;color:var(--muted);margin-top:4px}
+.brandmark .sub b{color:var(--accent-ink);font-weight:700}
+.badges{display:flex;gap:12px;align-items:center}
+.badge{display:flex;flex-direction:column;align-items:center;justify-content:center;width:74px;height:74px;border-radius:999px;border:2px solid var(--accent);text-align:center;line-height:1.05;font-size:.66rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.badge b{font-family:var(--display);font-size:1.25rem;color:var(--brand);text-transform:none;letter-spacing:0;font-weight:700}
+@media (max-width:1060px){.badges .badge:nth-child(-n+2){display:none}}
+@media (max-width:720px){.badges{display:none}.brandmark svg{width:48px;height:54px}.brandmark .sub{font-size:.74rem}}
+
+/* ---------- Nav bar ---------- */
+.navbar{background:var(--band);position:sticky;top:env(safe-area-inset-top,0px);z-index:50;box-shadow:0 2px 0 var(--accent)}
+.navbar .wrap{display:flex;align-items:stretch;height:var(--nav-h)}
+.menu{display:flex;align-items:stretch;justify-content:space-between;list-style:none;width:100%}
+.menu > li{position:relative;display:flex}
+.menu > li > a,.menu > li > button{display:flex;align-items:center;gap:5px;padding:0 14px;color:var(--on-band);text-decoration:none;font-weight:700;font-size:.93rem;white-space:nowrap;background:none;border:0;cursor:pointer;letter-spacing:.01em;position:relative}
+.menu > li > a::after,.menu > li > button::after{content:"";position:absolute;left:14px;right:14px;bottom:0;height:3px;background:var(--accent);transform:scaleX(0);transition:transform .2s}
+.menu > li:hover > a,.menu > li:hover > button{background:rgb(0 0 0 / .14)}
+.menu > li > .on::after,.menu > li:hover > a::after,.menu > li:hover > button::after{transform:scaleX(1)}
+.menu > li > .on{color:#FFE7A8}
+.menu .ico{width:14px;height:14px;stroke-width:2.4}
+.submenu{position:absolute;top:100%;left:0;min-width:270px;background:var(--surface);border-top:3px solid var(--accent);border-radius:0 0 10px 10px;box-shadow:var(--shadow);padding:8px;display:none;list-style:none;z-index:5}
+.menu > li:hover .submenu,.menu > li:focus-within .submenu{display:grid}
+.submenu a{display:grid;padding:10px 12px;border-radius:8px;text-decoration:none;color:var(--ink);font-weight:700;font-size:.92rem}
+.submenu a span{font-weight:400;color:var(--muted);font-size:.8rem}
+.submenu a:hover{background:var(--soft);color:var(--brand)}
+.nav-mobile{display:none;align-items:center;justify-content:space-between;width:100%;color:var(--on-band)}
+.burger{background:none;border:1px solid rgb(255 255 255 / .35);color:var(--on-band);border-radius:8px;height:40px;padding:0 14px;display:flex;gap:8px;align-items:center;cursor:pointer;font-weight:700}
+@media (max-width:1140px){.menu{display:none}.nav-mobile{display:flex}}
+.drawer{position:fixed;inset:0;z-index:70;background:rgb(0 0 0 / .5)}
+.drawer-panel{position:absolute;right:0;top:0;bottom:0;width:min(340px,88vw);background:var(--surface);padding:calc(16px + env(safe-area-inset-top,0px)) 18px 24px;overflow:auto;display:flex;flex-direction:column;gap:2px}
+.drawer-panel a{padding:10px 12px;border-radius:8px;text-decoration:none;color:var(--ink);font-weight:600}
+.drawer-panel a.on{background:var(--soft);color:var(--brand)}
+.drawer-panel .grp{font-family:var(--mono);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:14px 12px 4px}
+.icon-btn{width:40px;height:40px;border-radius:999px;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;cursor:pointer;color:var(--ink);flex:none}
+
+/* ---------- Admissions marquee ---------- */
+.admit{background:var(--accent);color:var(--on-accent);overflow:hidden;border-bottom:1px solid rgb(0 0 0 / .08)}
+.admit .wrap{display:flex;align-items:center;gap:14px;height:42px}
+.admit .tag{flex:none;background:var(--band);color:var(--on-band);font-weight:800;font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;padding:5px 12px;border-radius:4px;display:flex;gap:6px;align-items:center}
+.admit .tag i{width:8px;height:8px;border-radius:999px;background:#FFD45C;box-shadow:0 0 0 0 rgb(255 212 92 / .8);animation:ping 1.6s infinite}
+@keyframes ping{70%{box-shadow:0 0 0 8px rgb(255 212 92 / 0)}100%{box-shadow:0 0 0 0 rgb(255 212 92 / 0)}}
+.marquee{overflow:hidden;flex:1;min-width:0;-webkit-mask-image:linear-gradient(90deg,transparent,#000 3%,#000 97%,transparent);mask-image:linear-gradient(90deg,transparent,#000 3%,#000 97%,transparent)}
+.marquee-run{display:flex;width:max-content;animation:run 38s linear infinite}
+.marquee-run span{white-space:nowrap;font-weight:700;font-size:.92rem;padding-right:44px;display:inline-flex;align-items:center;gap:10px}
+.marquee-run span::before{content:"✦";color:var(--band)}
+.marquee:hover .marquee-run{animation-play-state:paused}
+.admit .btn{background:var(--band);color:var(--on-band);padding:7px 14px;font-size:.82rem;flex:none}
+@keyframes run{to{transform:translateX(-50%)}}
+@media (max-width:600px){.admit .btn{display:none}}
+
+/* ---------- Hero slider ---------- */
+.hero{position:relative;overflow:hidden;background:var(--band-deep);color:#fff}
+.track{display:flex;transition:transform 1.4s cubic-bezier(.65,0,.35,1);will-change:transform}
+.track.jump{transition:none}
+.slide{position:relative;flex:0 0 100%;height:clamp(460px,72vh,660px);margin:0;overflow:hidden}
+.slide img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1.08);transition:transform 9s ease-out}
+.slide.on img{transform:scale(1)}
+.slide .shade{position:absolute;inset:0;background:linear-gradient(90deg,rgb(40 6 12 / .86) 0%,rgb(40 6 12 / .55) 45%,rgb(40 6 12 / .08) 80%),linear-gradient(0deg,rgb(20 4 8 / .55),transparent 40%)}
+.slide .copy{position:relative;z-index:1;height:100%;display:flex;flex-direction:column;justify-content:center;gap:16px;padding-bottom:120px}
+.slide .copy > *{max-width:620px}
+.slide .kicker{display:inline-flex;align-self:flex-start;gap:8px;align-items:center;background:var(--accent);color:var(--on-accent);font-weight:800;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;padding:6px 12px;border-radius:4px}
+.slide h1,.slide h2{color:#fff;font-size:clamp(2rem,4.6vw,3.6rem);text-shadow:0 2px 20px rgb(0 0 0 / .3)}
+.slide h1 em,.slide h2 em{color:#FFD26A;font-style:italic}
+.slide p{color:rgb(255 255 255 / .88);font-size:1.08rem}
+.slide .slide-cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:6px}
+.slide .copy > *{opacity:0;transform:translateY(16px);transition:opacity .8s ease .5s, transform .8s ease .5s}
+.slide.on .copy > *{opacity:1;transform:none}
+.hero-ctrl{position:absolute;left:0;right:0;bottom:66px;z-index:3}
+.hero-ctrl .wrap{display:flex;align-items:center;gap:18px}
+.count{font-family:var(--mono);font-size:.95rem;color:rgb(255 255 255 / .75);font-variant-numeric:tabular-nums;min-width:74px}
+.count b{color:#fff;font-size:1.35rem;font-weight:500}
+.bar{flex:1;max-width:260px;height:3px;background:rgb(255 255 255 / .25);border-radius:3px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--accent)}
+.bar i.go{animation:fill var(--dur,7s) linear forwards}
+@keyframes fill{to{width:100%}}
+.dots{display:flex;gap:8px}
+.dots button{width:34px;height:4px;border-radius:3px;border:0;background:rgb(255 255 255 / .35);cursor:pointer;padding:0}
+.dots button.on{background:#fff}
+.arrows{display:flex;gap:8px;margin-left:auto}
+.arrows button{width:46px;height:46px;border-radius:999px;border:1.5px solid rgb(255 255 255 / .55);background:rgb(0 0 0 / .2);color:#fff;display:grid;place-items:center;cursor:pointer;transition:background .15s}
+.arrows button:hover{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+@media (max-width:640px){.dots,.bar{display:none}.slide .copy{padding-bottom:120px}.slide p{font-size:1rem}}
+
+/* quick links overlapping hero */
+.quick-wrap{position:relative;z-index:4;margin-top:-44px}
+.quick{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));background:var(--surface);border-radius:14px;box-shadow:var(--shadow);border:1px solid var(--line);overflow:hidden}
+.quick a{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;padding:22px 12px;text-decoration:none;color:var(--ink);border-right:1px solid var(--line);transition:background .15s}
+.quick a:last-child{border-right:0}
+.quick a:hover{background:var(--soft)}
+.quick a:hover .qi{background:var(--band);color:var(--on-band)}
+.qi{width:50px;height:50px;border-radius:999px;background:var(--accent-soft);color:var(--brand);display:grid;place-items:center;transition:background .15s,color .15s;flex:none}
+.qi .ico{width:22px;height:22px}
+.quick b{font-weight:800;font-size:.92rem}
+.quick span.s{font-size:.78rem;color:var(--muted)}
+@media (max-width:980px){.quick{grid-template-columns:repeat(3,minmax(0,1fr))}.quick a:nth-child(3){border-right:0}.quick a:nth-child(-n+3){border-bottom:1px solid var(--line)}}
+@media (max-width:520px){.quick{grid-template-columns:repeat(2,minmax(0,1fr))}.quick a{border-right:1px solid var(--line)!important;border-bottom:1px solid var(--line)}.quick a:nth-child(2n){border-right:0!important}.quick a:nth-last-child(-n+2){border-bottom:0}}
+
+/* news ticker */
+.news{display:flex;align-items:center;gap:14px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px 8px 8px 8px;margin-top:22px}
+.news .tag{flex:none;background:var(--band);color:var(--on-band);font-weight:800;font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;padding:6px 12px;border-radius:6px}
+.news .marquee-run{animation-duration:55s}
+.news .marquee-run span{font-weight:600;color:var(--ink)}
+.news .marquee-run span::before{content:"•";color:var(--accent)}
+
+/* welcome */
+.welcome{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:56px;align-items:center}
+.collage{position:relative;padding:0 40px 40px 0}
+.collage img{border-radius:14px;width:100%;aspect-ratio:4/3;object-fit:cover}
+.collage img + img{position:absolute;right:0;bottom:0;width:52%;aspect-ratio:1;border:6px solid var(--bg);box-shadow:var(--shadow)}
+.collage .est{position:absolute;left:-14px;bottom:56px;background:var(--band);color:var(--on-band);padding:14px 18px;border-radius:10px;box-shadow:var(--shadow);text-align:center;line-height:1.15}
+.collage .est b{display:block;font-family:var(--display);font-size:2rem;color:#FFD26A}
+.feat{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:8px}
+.feat div{display:flex;gap:12px;align-items:flex-start}
+.feat .qi{width:40px;height:40px}
+.feat .qi .ico{width:18px;height:18px}
+.feat b{display:block;font-size:.95rem}
+.feat span{font-size:.85rem;color:var(--muted)}
+@media (max-width:900px){.welcome{grid-template-columns:minmax(0,1fr);gap:36px}.collage{max-width:560px}}
+@media (max-width:480px){.feat{grid-template-columns:minmax(0,1fr)}.collage{padding:0 20px 30px 0}.collage .est{left:8px}}
+
+/* principal */
+.message{display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr);gap:48px;align-items:center}
+.portrait{position:relative}
+.portrait img{width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:14px}
+.portrait::before{content:"";position:absolute;inset:16px -16px -16px 16px;border:2px solid var(--accent);border-radius:14px;z-index:-1}
+.quote{font-family:var(--display);font-size:clamp(1.25rem,2.2vw,1.6rem);line-height:1.5}
+.quote::before{content:"“";color:var(--accent);font-size:3.4rem;line-height:0;vertical-align:-.42em;margin-right:4px}
+.sign{display:flex;flex-direction:column}
+.sign b{font-size:1.05rem}
+.sign span{font-size:.88rem;color:var(--muted)}
+@media (max-width:780px){.message{grid-template-columns:minmax(0,1fr)}.portrait{max-width:260px}}
+
+/* stats band with photo */
+.statband{position:relative;color:var(--on-band);background:var(--band)}
+.statband > img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.18}
+.statband .wrap{position:relative}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
+.stats > div{padding:6px 24px;text-align:center;border-left:1px solid rgb(255 255 255 / .2)}
+.stats > div:first-child{border-left:0}
+.stats .ico{width:30px;height:30px;color:var(--accent);margin:0 auto 8px;display:block}
+.stats strong{font-family:var(--display);font-weight:400;font-size:clamp(2rem,3.6vw,2.8rem);display:block;line-height:1.1;font-variant-numeric:tabular-nums}
+.stats span{font-size:.9rem;color:var(--on-band-muted)}
+@media (max-width:760px){.stats{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:28px}.stats > div:nth-child(3){border-left:0}}
+.stats.light > div{border-left-color:var(--line)}
+.stats.light span{color:var(--muted)}
+.stats.light strong{color:var(--brand)}
+
+/* photo cards */
+.pcard{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;text-decoration:none;color:var(--ink);transition:transform .2s, box-shadow .2s, border-color .2s;text-align:left;padding:0;cursor:pointer}
+.pcard:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:color-mix(in srgb,var(--brand) 35%,var(--line))}
+.pcard .img{position:relative;aspect-ratio:16/10;overflow:hidden;background:var(--soft)}
+.pcard .img img{width:100%;height:100%;object-fit:cover;transition:transform .6s}
+.pcard:hover .img img{transform:scale(1.06)}
+.pcard .img .chip{position:absolute;left:12px;top:12px;background:var(--surface)}
+.pcard .body{padding:18px 20px 20px;display:flex;flex-direction:column;gap:8px;flex:1}
+.pcard .body h3{font-size:1.15rem}
+.pcard .meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:auto;padding-top:6px}
+.pcard .code{font-family:var(--mono);font-size:.72rem;color:var(--muted);letter-spacing:.06em}
+.pcard.sel{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+
+/* events + notices */
+.notices{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:28px;align-items:start}
+.event{display:grid;grid-template-columns:150px minmax(0,1fr);gap:18px;padding:14px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);align-items:center}
+.event + .event{margin-top:14px}
+.event .thumb{position:relative;aspect-ratio:4/3;border-radius:8px;overflow:hidden}
+.event .thumb img{width:100%;height:100%;object-fit:cover}
+.event .date{position:absolute;left:8px;top:8px;background:var(--band);color:var(--on-band);border-radius:6px;text-align:center;padding:4px 8px;line-height:1.05}
+.event .date b{display:block;font-family:var(--display);font-size:1.3rem;font-weight:400}
+.event .date span{font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;font-weight:700}
+.event h4{font-family:var(--body);font-weight:800;font-size:1rem;line-height:1.35}
+.event p{font-size:.86rem;color:var(--muted);margin-top:4px}
+.board{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.board-h{background:var(--band);color:var(--on-band);padding:14px 20px;display:flex;justify-content:space-between;align-items:center}
+.board-h h3{font-size:1.15rem;color:var(--on-band)}
+.board-body{padding:6px 20px 12px;max-height:380px;overflow:auto}
+.notice-row{display:flex;gap:12px;padding:12px 0;border-bottom:1px dashed var(--line);align-items:flex-start;font-size:.93rem}
+.notice-row:last-child{border-bottom:0}
+.notice-row .mono{font-size:.72rem;color:var(--muted);flex:none;width:74px;padding-top:3px}
+.new{font-size:.62rem;font-weight:800;background:#C62828;color:#fff;border-radius:4px;padding:1px 6px;margin-left:6px;vertical-align:2px;animation:blink 1.4s steps(2,start) infinite}
+@keyframes blink{50%{opacity:.35}}
+@media (max-width:900px){.notices{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:480px){.event{grid-template-columns:minmax(0,1fr)}}
+
+/* testimonials */
+.tcard{display:flex;flex-direction:column;gap:18px;position:relative}
+.tcard::before{content:"“";position:absolute;right:20px;top:4px;font-family:var(--display);font-size:5rem;color:var(--accent-soft);line-height:1}
+.tcard p{font-family:var(--display);font-size:1.04rem;line-height:1.6;position:relative}
+.who{display:flex;gap:12px;align-items:center;margin-top:auto}
+.who img{width:52px;height:52px;border-radius:999px;object-fit:cover;border:2px solid var(--accent)}
+.who b{display:block;font-size:.95rem}
+.who span{font-size:.82rem;color:var(--muted)}
+
+/* gallery */
+.strip{display:grid;grid-template-columns:2fr 1fr 1fr;grid-template-rows:210px 210px;gap:14px}
+.strip button:first-child{grid-row:span 2}
+.gtile{position:relative;border:0;padding:0;border-radius:var(--r);overflow:hidden;cursor:zoom-in;background:var(--soft);display:block;width:100%;text-align:left}
+.gtile img{width:100%;height:100%;object-fit:cover;transition:transform .6s}
+.gtile:hover img{transform:scale(1.06)}
+.gtile .cap{position:absolute;left:0;right:0;bottom:0;padding:28px 14px 12px;background:linear-gradient(transparent,rgb(20 4 8 / .78));color:#fff;font-size:.9rem;font-weight:700}
+.gtile .cap span{display:block;font-weight:500;font-size:.74rem;opacity:.85;font-family:var(--mono)}
+@media (max-width:760px){.strip{grid-template-columns:1fr 1fr;grid-template-rows:auto}.strip button{aspect-ratio:4/3}.strip button:first-child{grid-column:span 2;grid-row:auto;aspect-ratio:16/9}}
+.gal{columns:3 280px;column-gap:14px}
+.gal .gtile{break-inside:avoid;margin-bottom:14px}
+.gal .gtile img{height:auto}
+.lightbox{position:fixed;inset:0;z-index:90;background:rgb(10 3 5 / .96);display:flex;align-items:center;justify-content:center;padding:70px 70px 40px}
+.lightbox figure{margin:0;max-width:1000px;width:100%;display:flex;flex-direction:column;gap:12px}
+.lightbox img{width:100%;max-height:72vh;object-fit:contain;border-radius:8px}
+.lightbox figcaption{display:flex;justify-content:space-between;gap:12px;color:#fff;font-weight:700;flex-wrap:wrap}
+.lightbox figcaption span{font-family:var(--mono);font-weight:500;color:rgb(255 255 255 / .7)}
+.lb-btn{position:absolute;width:48px;height:48px;border-radius:999px;border:0;background:#fff;color:#1a0a0d;display:grid;place-items:center;cursor:pointer;box-shadow:0 4px 18px rgb(0 0 0 / .4)}
+.lb-btn:hover{background:var(--accent)}
+.lb-close{top:calc(16px + env(safe-area-inset-top,0px));right:16px}
+.lb-prev{left:14px;top:50%;transform:translateY(-50%)}
+.lb-next{right:14px;top:50%;transform:translateY(-50%)}
+@media (max-width:640px){.lightbox{padding:70px 12px 90px}.lb-prev,.lb-next{top:auto;bottom:20px;transform:none}.lb-prev{left:calc(50% - 60px)}.lb-next{right:calc(50% - 60px)}}
+
+/* recruiters marquee */
+.logos{overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+.logos .marquee-run{animation-duration:40s;gap:14px;padding-block:4px}
+.logos .marquee-run span.wordmark{padding:16px 26px;font-weight:800;font-size:1rem}
+.logos .marquee-run span.wordmark::before{content:none}
+.wordmark{padding:16px 26px;border:1px solid var(--line);border-radius:10px;background:var(--surface);font-weight:800;letter-spacing:.02em;color:var(--muted);text-align:center;font-size:1rem;white-space:nowrap}
+
+/* CTA */
+.cta{position:relative;overflow:hidden;border-radius:18px;color:#fff;background:var(--band-deep)}
+.cta > img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.cta::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgb(60 10 20 / .94),rgb(60 10 20 / .72) 60%,rgb(60 10 20 / .45));z-index:1}
+.cta .in{position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:28px;align-items:center;padding:48px}
+.cta h2{color:#fff;max-width:24ch}
+.cta p{color:rgb(255 255 255 / .85);margin-top:10px}
+.cta .btns{display:flex;gap:10px;flex-wrap:wrap}
+@media (max-width:760px){.cta .in{grid-template-columns:minmax(0,1fr);padding:30px 24px}}
+
+/* page head */
+.phead{position:relative;color:#fff;background:var(--band-deep);overflow:hidden}
+.phead > img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.phead::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgb(70 12 24 / .94),rgb(70 12 24 / .74) 55%,rgb(70 12 24 / .45));z-index:1}
+.phead .wrap{position:relative;z-index:2;padding-block:64px 56px}
+.crumbs{font-size:.85rem;color:rgb(255 255 255 / .75);display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.crumbs a{color:#FFD26A;text-decoration:none}
+.phead h1{font-size:clamp(2rem,4vw,3rem);max-width:22ch;color:#fff}
+.phead p{color:rgb(255 255 255 / .85);max-width:62ch;margin-top:12px;font-size:1.06rem}
+.phead .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.subnav{border-bottom:1px solid var(--line);background:var(--surface);position:sticky;top:calc(var(--nav-h) + env(safe-area-inset-top,0px));z-index:30}
+.subnav .wrap{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+.subnav a{padding:14px 14px;text-decoration:none;color:var(--muted);font-weight:700;font-size:.9rem;white-space:nowrap;border-bottom:3px solid transparent}
+.subnav a:hover{color:var(--brand);border-bottom-color:var(--accent)}
+
+/* tables */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{text-align:left;padding:12px 16px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.76rem;letter-spacing:.06em;text-transform:uppercase;color:var(--on-band);font-weight:800;background:var(--band);white-space:nowrap}
+tr:last-child td{border-bottom:0}
+tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--soft) 55%,transparent)}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+.parts td:first-child{font-family:var(--mono);color:var(--accent-ink);font-weight:500}
+
+/* filters & forms */
+.filters{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:24px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;padding:4px;background:var(--surface);flex-wrap:wrap;gap:2px}
+.seg button{border:0;background:none;padding:8px 14px;border-radius:7px;cursor:pointer;font-size:.88rem;font-weight:700;color:var(--muted)}
+.seg button:hover{color:var(--brand)}
+.seg button.on{background:var(--band);color:var(--on-band)}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field label{font-size:.86rem;font-weight:700}
+.input{width:100%;padding:11px 14px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-size:.95rem}
+.input:focus{outline:2px solid var(--accent);outline-offset:0;border-color:transparent}
+.search{position:relative;flex:1;min-width:220px}
+.search .ico{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted)}
+.search .input{padding-left:40px}
+.form-ok{display:flex;gap:10px;align-items:flex-start;padding:14px 16px;border-radius:8px;background:color-mix(in srgb,var(--ok) 12%,var(--surface));color:var(--ok);font-weight:700;font-size:.92rem;border:1px solid color-mix(in srgb,var(--ok) 35%,transparent)}
+.form-card{border-top:4px solid var(--accent)}
+
+/* programme cards */
+.prog{display:flex;flex-direction:column;gap:12px;border-top:4px solid var(--band)}
+.prog.l-PG{border-top-color:var(--accent)}
+.prog.l-Research{border-top-color:#2E6B8A}
+.prog.l-Certificate{border-top-color:var(--ok)}
+.prog .top{display:flex;justify-content:space-between;gap:10px;align-items:center}
+.prog h3{font-size:1.12rem}
+.prog dl{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:0;font-size:.86rem}
+.prog dt{color:var(--muted)} .prog dd{margin:0;font-weight:700}
+.prog .foot{margin-top:auto;padding-top:12px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:8px}
+
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:18px;counter-reset:s}
+.steps > div{position:relative;padding:24px 20px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
+.steps > div::before{counter-increment:s;content:counter(s);display:grid;place-items:center;width:38px;height:38px;border-radius:999px;background:var(--band);color:var(--on-band);font-weight:800;margin-bottom:14px}
+.steps h4{font-family:var(--body);font-weight:800;font-size:1rem;margin-bottom:4px}
+.steps p{font-size:.88rem;color:var(--muted)}
+@media (max-width:980px){.steps{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.steps{grid-template-columns:minmax(0,1fr)}}
+
+/* timeline */
+.tl{display:flex;flex-direction:column;border-left:2px solid var(--line);margin-left:8px}
+.tl > div{position:relative;padding:0 0 26px 28px}
+.tl > div::before{content:"";position:absolute;left:-9px;top:5px;width:16px;height:16px;border-radius:999px;background:var(--accent);border:3px solid var(--bg)}
+.tl .yr{font-family:var(--mono);font-size:.82rem;color:var(--accent-ink);font-weight:500}
+.tl h4{margin:2px 0 4px}
+
+/* accordions */
+details.acc{border:1px solid var(--line);border-radius:10px;background:var(--surface);margin-bottom:10px}
+details.acc summary{cursor:pointer;list-style:none;padding:15px 18px;font-weight:700;display:flex;justify-content:space-between;gap:16px;align-items:center}
+details.acc summary::-webkit-details-marker{display:none}
+details.acc summary::after{content:"+";display:grid;place-items:center;width:26px;height:26px;border-radius:999px;background:var(--accent-soft);color:var(--accent-ink);font-weight:800;flex:none}
+details.acc[open] summary::after{content:"–"}
+details.acc[open] summary{color:var(--brand)}
+details.acc p{padding:0 18px 16px;color:var(--muted);max-width:72ch}
+
+/* people */
+.person{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:26px 20px}
+.person img{width:110px;height:110px;border-radius:999px;object-fit:cover;border:3px solid var(--accent);padding:3px;background:var(--surface)}
+.person h4{font-family:var(--body);font-weight:800;font-size:1.02rem}
+.person .d{font-size:.86rem;color:var(--muted)}
+.fac{display:flex;gap:16px;align-items:flex-start}
+.fac img{width:78px;height:78px;border-radius:12px;object-fit:cover;flex:none}
+.fac h4{font-family:var(--body);font-weight:800;font-size:1rem}
+.fac .d{font-size:.86rem;color:var(--muted)}
+.fac .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+
+/* misc */
+.kv{display:grid;grid-template-columns:auto 1fr;gap:8px 18px;font-size:.92rem;margin:0}
+.kv dt{color:var(--muted)} .kv dd{margin:0;font-weight:700}
+.pill-row{display:flex;gap:8px;flex-wrap:wrap}
+.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:48px;align-items:start}
+.split.wide-l{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr)}
+.split.center{align-items:center}
+@media (max-width:880px){.split,.split.wide-l{grid-template-columns:minmax(0,1fr);gap:32px}}
+.rounded-img{border-radius:14px;width:100%;aspect-ratio:4/3;object-fit:cover}
+.check{display:flex;flex-direction:column;gap:10px;list-style:none}
+.check li{display:flex;gap:10px;align-items:flex-start}
+.check li::before{content:"";flex:none;width:18px;height:18px;margin-top:3px;border-radius:999px;background:var(--accent-soft);box-shadow:inset 0 0 0 5px var(--accent-soft),inset 0 0 0 9px var(--accent)}
+.hd-cat{display:flex;flex-direction:column;gap:8px;transition:border-color .2s, transform .2s}
+.hd-cat:hover{border-color:var(--accent);transform:translateY(-2px)}
+.hd-cat .contact{font-family:var(--mono);font-size:.78rem;color:var(--muted);margin-top:auto;padding-top:10px;border-top:1px dashed var(--line)}
+.big-num{font-family:var(--display);font-size:2.3rem;line-height:1;color:var(--brand)}
+.rank{display:flex;flex-direction:column;gap:6px;border-bottom:4px solid var(--accent)}
+.opac-res{display:flex;flex-direction:column}
+.opac-res > div{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);font-size:.92rem;align-items:center}
+.status-in{color:var(--ok);font-weight:800;font-size:.8rem}
+.status-out{color:var(--warn);font-weight:800;font-size:.8rem}
+.dept-detail{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) minmax(0,1fr);gap:28px;padding:24px;border-radius:16px;background:var(--surface);border:1px solid var(--line);margin-bottom:32px;scroll-margin-top:calc(var(--nav-h) + 20px);box-shadow:var(--shadow);align-items:start}
+.dept-detail > img{border-radius:12px;width:100%;aspect-ratio:4/3;object-fit:cover}
+@media (max-width:980px){.dept-detail{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.dept-detail > img{grid-column:1/-1;aspect-ratio:16/7}}
+@media (max-width:640px){.dept-detail{grid-template-columns:minmax(0,1fr)}}
+.countdown{display:flex;gap:10px;margin-top:22px;flex-wrap:wrap}
+.countdown div{background:rgb(255 255 255 / .12);border:1px solid rgb(255 255 255 / .25);border-radius:10px;padding:10px 14px;text-align:center;min-width:78px}
+.countdown b{display:block;font-family:var(--display);font-size:1.7rem;color:#FFD26A;font-weight:400;line-height:1.1}
+.countdown span{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em}
+.map{position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:var(--soft);aspect-ratio:4/3;max-width:100%}
+.map svg{width:100%;height:100%;display:block}
+.map .road{stroke:var(--surface);stroke-width:14;fill:none;stroke-linecap:round}
+.map .road2{stroke:var(--surface);stroke-width:7;fill:none}
+.map .blk{fill:color-mix(in srgb,var(--brand) 10%,var(--soft))}
+.map .park{fill:color-mix(in srgb,var(--ok) 24%,var(--soft))}
+.map .lbl{font-family:var(--mono);font-size:11px;fill:var(--muted)}
+.map .pin{fill:var(--band)}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:10px;font-size:.92rem;z-index:95;box-shadow:var(--shadow);max-width:calc(100% - 32px)}
+.side-tab{position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:45;writing-mode:vertical-rl;background:var(--accent);color:var(--on-accent);font-weight:800;text-decoration:none;padding:16px 10px;border-radius:10px 0 0 10px;letter-spacing:.08em;font-size:.82rem;box-shadow:var(--shadow);text-transform:uppercase}
+.side-tab:hover{background:var(--band);color:var(--on-band)}
+.to-top{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:45;width:46px;height:46px;border-radius:999px;border:0;background:var(--band);color:var(--on-band);display:grid;place-items:center;cursor:pointer;box-shadow:var(--shadow)}
+@media (max-width:640px){.side-tab{display:none}}
+
+/* footer */
+footer.site{background:var(--band-deep);color:var(--on-band-muted);font-size:.92rem}
+footer.site .wrap{padding-block:60px 26px}
+.fgrid{display:grid;grid-template-columns:1.5fr 1fr 1fr 1.2fr;gap:36px}
+footer h4{font-family:var(--body);font-size:.95rem;font-weight:800;color:#fff;margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid var(--accent);display:inline-block}
+footer ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+footer a{color:var(--on-band-muted);text-decoration:none}
+footer a:hover{color:#FFD26A}
+footer .fname{font-family:var(--crest);font-size:1.3rem;color:#fff;font-weight:700;line-height:1.2}
+.fcontact{display:flex;flex-direction:column;gap:10px}
+.fcontact div{display:flex;gap:10px;align-items:flex-start}
+.fcontact .ico{color:var(--accent);margin-top:3px}
+.social{display:flex;gap:8px;margin-top:6px}
+.social a{width:36px;height:36px;border-radius:999px;border:1px solid rgb(255 255 255 / .25);display:grid;place-items:center;font-weight:800;font-size:.8rem;color:#fff}
+.social a:hover{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.fbase{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-top:22px;margin-top:40px;border-top:1px solid rgb(255 255 255 / .14);font-size:.82rem}
+@media (max-width:900px){.fgrid{grid-template-columns:1fr 1fr}}
+@media (max-width:540px){.fgrid{grid-template-columns:1fr}}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+
+<!-- icon sprite -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5M8 7h7"/></symbol>
+  <symbol id="i-cap" viewBox="0 0 24 24"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2 9 2 12 0v-5M22 9v6"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3H6v18h12V7z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></symbol>
+  <symbol id="i-pen" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13 7l4 4"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-left" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></symbol>
+  <symbol id="i-right" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path d="M6 15l6-6 6 6"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M5 19l1.5-1.5M17.5 6.5L19 5"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><path d="M5 4h4l2 5-3 2a11 11 0 0 0 5 5l2-3 5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s7-6 7-12a7 7 0 0 0-14 0c0 6 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-rupee" viewBox="0 0 24 24"><path d="M7 4h11M7 9h11M7 4c6 0 6 9 0 9h-1l8 7"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11l9-7 9 7M5 9v11h14V9"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-4 8-8 9-4-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></symbol>
+  <symbol id="i-laptop" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M2 19h20"/></symbol>
+  <symbol id="i-bus" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="14" rx="2"/><path d="M4 11h16M7 17v3M17 17v3"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-8-5-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 9c0 6-8 11-8 11z"/></symbol>
+  <symbol id="i-award" viewBox="0 0 24 24"><circle cx="12" cy="9" r="6"/><path d="M8.5 14L7 22l5-3 5 3-1.5-8"/></symbol>
+  <symbol id="i-brief" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V4h6v3M3 13h18"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2 20c0-4 3-6 7-6s7 2 7 6M16 4.5a3.5 3.5 0 0 1 0 7M18 14c2.5.5 4 2.5 4 6"/></symbol>
+  <symbol id="i-flask" viewBox="0 0 24 24"><path d="M9 3h6M10 3v6L4 19a1.5 1.5 0 0 0 1.3 2h13.4A1.5 1.5 0 0 0 20 19l-6-10V3"/><path d="M7 15h10"/></symbol>
+  <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M5 19c0-9 6-14 15-14 0 9-5 15-14 15"/><path d="M5 19l7-7"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></symbol>
+</svg>
+
+<!-- ========== HEADER ========== -->
+<div class="topbar">
+  <div class="wrap">
+    <div class="row">
+      <span class="ti"><svg class="ico"><use href="#i-phone"/></svg><span class="mono">+91 44 2239 4100</span></span>
+      <span class="ti hide-sm"><svg class="ico"><use href="#i-mail"/></svg>office@marudham.edu.in</span>
+    </div>
+    <div class="row">
+      <a class="hide-sm" href="#about" data-jump="ab-iqac">IQAC</a><a class="hide-sm" href="#about" data-jump="ab-accr">NIRF</a><a class="hide-sm" href="#alumni">Alumni</a><a class="hide-sm" href="#helpdesk">Help Desk</a>
+      <button class="theme-btn" id="themeBtn" type="button" aria-label="Switch colour theme"><svg class="ico" style="width:14px;height:14px"><use href="#i-sun"/></svg><span id="themeLbl">Dark</span></button>
+    </div>
+  </div>
+</div>
+
+<div class="masthead">
+  <div class="wrap">
+    <a class="brandmark" href="#home" aria-label="Marudham College home">
+      <svg viewBox="0 0 64 72" aria-hidden="true">
+        <path d="M32 2 L61 10 V33 C61 52 47 64 32 70 C17 64 3 52 3 33 V10 Z" fill="#7B1C2A"/>
+        <path d="M32 7 L56 14 V33 C56 49 45 59 32 64 C19 59 8 49 8 33 V14 Z" fill="none" stroke="#D9A21B" stroke-width="1.6"/>
+        <path d="M32 15 C27.5 21 27.5 27 32 33 C36.5 27 36.5 21 32 15Z" fill="#D9A21B"/>
+        <path d="M24 37 h16 l-3 4 h-10z" fill="#FFF7F0"/>
+        <path d="M19 47 Q32 40 45 47 M22 52 Q32 46 42 52" stroke="#FFF7F0" stroke-width="1.8" fill="none"/>
+      </svg>
+      <span><span class="nm">Marudham College of Arts &amp; Science</span><span class="sub">Autonomous · Affiliated to the University of Madras · <b>Re-accredited A++ by NAAC</b> · Tambaram, Chennai</span></span>
+    </a>
+    <div class="badges">
+      <div class="badge"><b>A++</b>NAAC</div>
+      <div class="badge"><b>34</b>NIRF</div>
+      <div class="badge"><b>1921</b>Estd.</div>
+    </div>
+  </div>
+</div>
+
+<nav class="navbar" aria-label="Main">
+  <div class="wrap">
+    <ul class="menu">
+      <li><a href="#home" data-nav="home">Home</a></li>
+      <li><a href="#about" data-nav="about">About Us</a></li>
+      <li data-group="academics"><button type="button" aria-haspopup="true">Academics <svg class="ico"><use href="#i-down"/></svg></button>
+        <ul class="submenu">
+          <li><a href="#academics">Academic Overview<span>Calendar, CBCS structure, exams</span></a></li>
+          <li><a href="#programmes">Programmes<span>UG, PG, research &amp; certificates</span></a></li>
+          <li><a href="#departments">Departments<span>16 departments, 3 schools</span></a></li>
+          <li><a href="#faculty">Faculty<span>Directory of teachers</span></a></li>
+          <li><a href="#syllabus">Syllabus<span>Regulations 2023 &amp; 2024</span></a></li>
+        </ul></li>
+      <li><a href="#admission" data-nav="admission">Admission</a></li>
+      <li><a href="#library" data-nav="library">Library</a></li>
+      <li><a href="#placement" data-nav="placement">Placement</a></li>
+      <li><a href="#achievements" data-nav="achievements">Achievements</a></li>
+      <li data-group="campus"><button type="button" aria-haspopup="true">Campus Life <svg class="ico"><use href="#i-down"/></svg></button>
+        <ul class="submenu">
+          <li><a href="#gallery">Gallery<span>Events and campus photographs</span></a></li>
+          <li><a href="#alumni">Alumni<span>Association, chapters, reunions</span></a></li>
+        </ul></li>
+      <li><a href="#helpdesk" data-nav="helpdesk">Help Desk</a></li>
+      <li><a href="#contact" data-nav="contact">Contact</a></li>
+    </ul>
+    <div class="nav-mobile">
+      <span style="font-weight:800" id="mobTitle">Home</span>
+      <button class="burger" id="burger" type="button" aria-label="Open menu" aria-expanded="false"><svg class="ico"><use href="#i-menu"/></svg>Menu</button>
+    </div>
+  </div>
+</nav>
+
+<div class="admit" role="region" aria-label="Admissions announcement">
+  <div class="wrap">
+    <span class="tag"><i></i>Admissions Open</span>
+    <div class="marquee"><div class="marquee-run" id="admitRun"></div></div>
+    <a class="btn" href="#admission">Apply now</a>
+  </div>
+</div>
+
+<div class="drawer" id="drawer" hidden>
+  <div class="drawer-panel" role="dialog" aria-label="Site menu">
+    <button class="icon-btn" id="drawerClose" type="button" aria-label="Close menu" style="align-self:flex-end"><svg class="ico"><use href="#i-x"/></svg></button>
+    <a href="#home" data-nav="home">Home</a><a href="#about" data-nav="about">About Us</a>
+    <div class="grp">Academics</div>
+    <a href="#academics" data-nav="academics">Academic Overview</a><a href="#programmes" data-nav="programmes">Programmes</a><a href="#departments" data-nav="departments">Departments</a><a href="#faculty" data-nav="faculty">Faculty</a><a href="#syllabus" data-nav="syllabus">Syllabus</a><a href="#library" data-nav="library">Library</a>
+    <div class="grp">Join us</div>
+    <a href="#admission" data-nav="admission">Admission</a><a href="#placement" data-nav="placement">Placement</a>
+    <div class="grp">Campus life</div>
+    <a href="#achievements" data-nav="achievements">Achievements</a><a href="#gallery" data-nav="gallery">Gallery</a><a href="#alumni" data-nav="alumni">Alumni</a>
+    <div class="grp">Support</div>
+    <a href="#helpdesk" data-nav="helpdesk">Help Desk</a><a href="#contact" data-nav="contact">Contact</a>
+    <a class="btn btn-accent" href="#admission" style="margin-top:14px">Apply for 2027–28</a>
+  </div>
+</div>
+
+<main id="app">
+
+<!-- ================= HOME ================= -->
+<section class="page" data-page="home">
+  <div class="hero" id="hero" aria-roledescription="carousel" aria-label="Campus highlights">
+    <div class="track" id="track">
+      <figure class="slide on" aria-label="Slide 1 of 4">
+        <img src="assets/img/hero-1.webp" alt="Graduates in gowns in front of a white heritage building">
+        <div class="shade"></div>
+        <div class="wrap copy">
+          <span class="kicker">Admissions open · 2027–28</span>
+          <h1>Rooted in 1921.<br>Learning that <em>grows</em> with you.</h1>
+          <p>42 undergraduate, postgraduate and research programmes on a 186-acre green campus in Tambaram.</p>
+          <div class="slide-cta"><a class="btn btn-accent" href="#admission">Apply now <svg class="ico"><use href="#i-arrow"/></svg></a><a class="btn btn-light" href="#programmes">Explore programmes</a></div>
+        </div>
+      </figure>
+      <figure class="slide" aria-label="Slide 2 of 4">
+        <img src="assets/img/hero-2.webp" alt="Red-brick heritage building with a clock tower">
+        <div class="shade"></div>
+        <div class="wrap copy">
+          <span class="kicker">105 years of excellence</span>
+          <h2>NAAC <em>A++</em> and ranked 34th among India’s colleges</h2>
+          <p>Fourth-cycle accreditation with a CGPA of 3.71, and a UGC College with Potential for Excellence.</p>
+          <div class="slide-cta"><a class="btn btn-accent" href="#about">About the college</a><a class="btn btn-light" href="#achievements">Our achievements</a></div>
+        </div>
+      </figure>
+      <figure class="slide" aria-label="Slide 3 of 4">
+        <img src="assets/img/hero-3.webp" alt="Garden courtyard between two college buildings">
+        <div class="shade"></div>
+        <div class="wrap copy">
+          <span class="kicker">Campus life</span>
+          <h2>186 acres of <em>green</em>, three halls of residence</h2>
+          <p>A protected scrub forest, playing fields, an open-air theatre and 40 student clubs.</p>
+          <div class="slide-cta"><a class="btn btn-accent" href="#gallery">View gallery</a><a class="btn btn-light" href="#alumni">Meet our alumni</a></div>
+        </div>
+      </figure>
+      <figure class="slide" aria-label="Slide 4 of 4">
+        <img src="assets/img/hero-4.webp" alt="Graduates throwing their caps in the air">
+        <div class="shade"></div>
+        <div class="wrap copy">
+          <span class="kicker">Placement 2025–26</span>
+          <h2><em>612</em> offers from 214 recruiters</h2>
+          <p>Highest package 18.5 LPA. Training starts in the second year and runs through the final semester.</p>
+          <div class="slide-cta"><a class="btn btn-accent" href="#placement">Placement record</a><a class="btn btn-light" href="#helpdesk">Talk to us</a></div>
+        </div>
+      </figure>
+    </div>
+    <div class="hero-ctrl">
+      <div class="wrap">
+        <div class="count" aria-live="polite"><b id="slNow">01</b> / <span id="slTotal">04</span></div>
+        <div class="bar"><i id="slBar"></i></div>
+        <div class="dots" id="slDots"></div>
+        <div class="arrows">
+          <button type="button" id="slPrev" aria-label="Previous slide"><svg class="ico"><use href="#i-left"/></svg></button>
+          <button type="button" id="slNext" aria-label="Next slide"><svg class="ico"><use href="#i-right"/></svg></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap quick-wrap">
+    <div class="quick">
+      <a href="#admission"><span class="qi"><svg class="ico"><use href="#i-pen"/></svg></span><b>Apply Online</b><span class="s">Opens 2 May 2027</span></a>
+      <a href="#programmes"><span class="qi"><svg class="ico"><use href="#i-cap"/></svg></span><b>Programmes</b><span class="s">UG · PG · Ph.D.</span></a>
+      <a href="#syllabus"><span class="qi"><svg class="ico"><use href="#i-file"/></svg></span><b>Syllabus</b><span class="s">Reg. 2023 &amp; 2024</span></a>
+      <a href="#library"><span class="qi"><svg class="ico"><use href="#i-book"/></svg></span><b>Library</b><span class="s">1,24,500 volumes</span></a>
+      <a href="#placement"><span class="qi"><svg class="ico"><use href="#i-brief"/></svg></span><b>Placement</b><span class="s">612 offers</span></a>
+      <a href="#helpdesk"><span class="qi"><svg class="ico"><use href="#i-users"/></svg></span><b>Help Desk</b><span class="s">Raise a ticket</span></a>
+    </div>
+    <div class="news">
+      <span class="tag">Latest News</span>
+      <div class="marquee"><div class="marquee-run" id="newsRun"></div></div>
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="wrap welcome">
+      <div class="collage">
+        <img src="assets/img/campus-tower.webp" alt="College main block and clock tower">
+        <img src="assets/img/lawn-study.webp" alt="Students studying together on the lawn">
+        <div class="est"><b>105</b>years of<br>excellence</div>
+      </div>
+      <div class="stack" style="gap:16px">
+        <div class="shead left" style="margin-bottom:0"><span class="eyebrow">Welcome to Marudham</span><h2>A college where things grow</h2><span class="rule"><i></i></span></div>
+        <p class="lede">Founded in 1921 by the Madras Mission Council, Marudham is a Christian minority, autonomous college of 7,800 students. Its name comes from <i>marutham</i>, the fertile river-plain landscape of classical Tamil poetry.</p>
+        <p class="muted">We teach the arts, sciences and commerce in two shifts. Every student joins a hall, a club and an extension service such as NSS or NCC, so learning carries on outside the classroom.</p>
+        <div class="feat">
+          <div><span class="qi"><svg class="ico"><use href="#i-award"/></svg></span><span><b>NAAC A++</b><span>4th cycle, CGPA 3.71</span></span></div>
+          <div><span class="qi"><svg class="ico"><use href="#i-leaf"/></svg></span><span><b>186-acre campus</b><span>with a 64-acre forest</span></span></div>
+          <div><span class="qi"><svg class="ico"><use href="#i-flask"/></svg></span><span><b>DBT Star College</b><span>for the life sciences</span></span></div>
+          <div><span class="qi"><svg class="ico"><use href="#i-globe"/></svg></span><span><b>1,40,000 alumni</b><span>in 60 countries</span></span></div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px"><a class="btn btn-brand" href="#about">Read our story</a><a class="btn btn-ghost" href="#contact">Plan a campus visit</a></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="statband section">
+    <img src="assets/img/convocation.webp" alt="">
+    <div class="wrap">
+      <div class="stats">
+        <div><svg class="ico"><use href="#i-users"/></svg><strong>7,812</strong><span>Students enrolled</span></div>
+        <div><svg class="ico"><use href="#i-cap"/></svg><strong>318</strong><span>Faculty, 74% with Ph.D.</span></div>
+        <div><svg class="ico"><use href="#i-brief"/></svg><strong>612</strong><span>Placement offers 2025–26</span></div>
+        <div><svg class="ico"><use href="#i-award"/></svg><strong>46</strong><span>University rank holders</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="wrap message">
+      <div class="portrait"><img src="assets/img/p-1181686.webp" alt="Portrait of the Principal, Dr. Priya Jebakumar"></div>
+      <div class="stack" style="gap:18px">
+        <div class="shead left" style="margin-bottom:0"><span class="eyebrow">Principal’s message</span><span class="rule"><i></i></span></div>
+        <p class="quote">A college is measured by the habits it leaves in its students: reading closely, questioning kindly, and turning up for people who cannot repay you.</p>
+        <p class="muted" style="max-width:64ch">For a hundred and five years Marudham has taught first-generation learners alongside the children of its own alumni. This year we added four programmes, opened the Centre for Climate Studies, and moved every syllabus to outcome-based learning.</p>
+        <div class="sign"><b>Dr. Priya Jebakumar</b><span>Principal &amp; Secretary · M.Sc., Ph.D. (Botany)</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="shead"><span class="eyebrow">Schools &amp; Departments</span><h2>Sixteen departments, one campus</h2><span class="rule"><i></i></span><p class="lede">Humanities, Sciences, and Commerce &amp; Management, each with its own labs, research centres and extension work.</p></div>
+      <div class="grid g4" id="homeDepts"></div>
+      <div style="text-align:center;margin-top:32px"><a class="btn btn-brand" href="#departments">View all departments <svg class="ico"><use href="#i-arrow"/></svg></a></div>
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="wrap">
+      <div class="shead"><span class="eyebrow">What’s happening</span><h2>Events &amp; notices</h2><span class="rule"><i></i></span></div>
+      <div class="notices">
+        <div id="homeEvents"></div>
+        <div class="board">
+          <div class="board-h"><h3>Notice board</h3><span class="chip gold">Oct 2026</span></div>
+          <div class="board-body">
+            <div class="notice-row"><span class="mono">13 Oct 26</span><span>Odd semester examination timetable (Nov 2026) published<span class="new">NEW</span></span></div>
+            <div class="notice-row"><span class="mono">10 Oct 26</span><span>Post-matric scholarship: last date for renewal is 31 October<span class="new">NEW</span></span></div>
+            <div class="notice-row"><span class="mono">04 Oct 26</span><span>Library open till 9:00 pm during examination weeks</span></div>
+            <div class="notice-row"><span class="mono">28 Sep 26</span><span>Call for papers: Marudham Journal of Humanities, Vol. 18</span></div>
+            <div class="notice-row"><span class="mono">19 Sep 26</span><span>Anti-ragging affidavit submission for first-year students</span></div>
+            <div class="notice-row"><span class="mono">11 Sep 26</span><span>NCC enrolment for the 2026–27 batch</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="shead"><span class="eyebrow">Campus facilities</span><h2>Everything a student needs</h2><span class="rule"><i></i></span></div>
+      <div class="grid g3" id="facilities"></div>
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="wrap">
+      <div class="shead"><span class="eyebrow">Placement 2025–26</span><h2>Where the class of 2026 went</h2><span class="rule"><i></i></span></div>
+      <div class="stats light" style="margin-bottom:36px">
+        <div><strong>612</strong><span>offers from 214 recruiters</span></div>
+        <div><strong>18.5 LPA</strong><span>highest package</span></div>
+        <div><strong>4.2 LPA</strong><span>median package</span></div>
+        <div><strong>87%</strong><span>of eligible students placed</span></div>
+      </div>
+      <div class="logos"><div class="marquee-run" id="homeRecruiters"></div></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="shead"><span class="eyebrow">Voices</span><h2>Students and alumni</h2><span class="rule"><i></i></span></div>
+      <div class="grid g3">
+        <div class="card tcard"><p>The Botany department took us to the Western Ghats every semester. I learnt more about field work in those trips than in any textbook.</p><div class="who"><img src="assets/img/p-1239291.webp" alt=""><div><b>Aarthi Ramesh</b><span>M.Sc. Botany, 2025 · JRF, IISER</span></div></div></div>
+        <div class="card tcard"><p>I came from a village school in Villupuram. The bridge course in English in my first month changed how I saw myself in a classroom.</p><div class="who"><img src="assets/img/p-1516680.webp" alt=""><div><b>Karthik Murugan</b><span>B.Com (CA), III year</span></div></div></div>
+        <div class="card tcard"><p>Hall life taught me to manage a budget, a mess committee and a debate team at once. That is still how I run my product team.</p><div class="who"><img src="assets/img/p-2853592.webp" alt=""><div><b>Sharon Joseph</b><span>BCA, 2014 · Product Lead, Bengaluru</span></div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0">
+    <div class="wrap">
+      <div class="shead-row"><div class="shead left"><span class="eyebrow">Gallery</span><h2>Campus in pictures</h2><span class="rule"><i></i></span></div><a class="btn btn-ghost" href="#gallery">Open full gallery <svg class="ico"><use href="#i-arrow"/></svg></a></div>
+      <div class="strip" id="homeGallery"></div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0">
+    <div class="wrap">
+      <div class="cta">
+        <img src="assets/img/graduates.webp" alt="">
+        <div class="in">
+          <div><span class="eyebrow" style="color:#FFD26A">Admissions 2027–28</span><h2 style="margin-top:8px">Applications for UG and PG programmes open on 2 May 2027</h2><p>Register now to get the prospectus, reminders and a campus visit slot.</p></div>
+          <div class="btns"><a class="btn btn-accent" href="#admission">Start application</a><a class="btn btn-light" href="#contact">Plan a visit</a></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</section>
+
+<!-- ================= ABOUT ================= -->
+<section class="page" data-page="about" hidden>
+  <div class="phead"><img src="assets/img/campus-tower.webp" alt=""><div class="wrap"><div class="crumbs"><a href="#home">Home</a>/<span>About Us</span></div><h1>A hundred and five years in Tambaram</h1><p>Founded in 1921 as a college for rural students, Marudham became autonomous in 1978 and was re-accredited A++ by NAAC in 2024.</p></div></div>
+  <nav class="subnav" aria-label="About sections"><div class="wrap"><a href="#about" data-jump="ab-history">History</a><a href="#about" data-jump="ab-vision">Vision &amp; Mission</a><a href="#about" data-jump="ab-lead">Leadership</a><a href="#about" data-jump="ab-iqac">Governance &amp; IQAC</a><a href="#about" data-jump="ab-accr">Accreditation</a></div></nav>
+
+  <section class="section" id="ab-history">
+    <div class="wrap split">
+      <div class="stack" style="gap:18px">
+        <div class="shead left" style="margin-bottom:0"><span class="eyebrow">Our story</span><h2>From a mission hall to a 186-acre campus</h2><span class="rule"><i></i></span></div>
+        <p class="lede">The college began with 64 students and four teachers in a borrowed hall in Saidapet. In 1926 it moved to the scrub forest at Tambaram, where the founders planted the neem avenue that still shades the main road.</p>
+        <img class="rounded-img" src="assets/img/courtyard.webp" alt="Courtyard garden between college buildings">
+      </div>
+      <div class="tl">
+        <div><span class="yr">1921</span><h4>Founded in Saidapet</h4><p class="muted">64 students, intermediate courses in arts.</p></div>
+        <div><span class="yr">1926</span><h4>Moves to Tambaram</h4><p class="muted">Main Block and Clock Tower completed.</p></div>
+        <div><span class="yr">1957</span><h4>Postgraduate studies begin</h4><p class="muted">M.A. English and M.Sc. Botany.</p></div>
+        <div><span class="yr">1978</span><h4>Autonomous status</h4><p class="muted">Among the first autonomous colleges in Tamil Nadu.</p></div>
+        <div><span class="yr">2004</span><h4>College with Potential for Excellence</h4><p class="muted">Recognised by the UGC.</p></div>
+        <div><span class="yr">2021</span><h4>Centenary year</h4><p class="muted">Centenary Library and Science Block opened.</p></div>
+        <div style="padding-bottom:0"><span class="yr">2024</span><h4>NAAC A++</h4><p class="muted">Fourth cycle, CGPA 3.71 out of 4.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section alt" id="ab-vision">
+    <div class="wrap grid g3">
+      <div class="card stack" style="border-top:4px solid var(--band)"><span class="qi"><svg class="ico"><use href="#i-globe"/></svg></span><h3>Vision</h3><p class="muted">To be a community of learning that forms scholars of integrity in service of a just society.</p></div>
+      <div class="card stack" style="border-top:4px solid var(--accent)"><span class="qi"><svg class="ico"><use href="#i-leaf"/></svg></span><h3>Mission</h3><p class="muted">Offer affordable, rigorous education to every background, with priority for rural and first-generation learners. Join teaching with research and extension. Care for the campus forest as a shared trust.</p></div>
+      <div class="card stack" style="border-top:4px solid var(--band)"><span class="qi"><svg class="ico"><use href="#i-heart"/></svg></span><h3>Core values</h3><ul class="check"><li>Truth in inquiry</li><li>Service before self</li><li>Respect for every person</li><li>Care for creation</li></ul></div>
+    </div>
+  </section>
+
+  <section class="section" id="ab-lead">
+    <div class="wrap">
+      <div class="shead"><span class="eyebrow">Leadership</span><h2>Who runs the college</h2><span class="rule"><i></i></span></div>
+      <div class="grid g4" id="leaders"></div>
+    </div>
+  </section>
+
+  <section class="section alt" id="ab-iqac">
+    <div class="wrap split">
+      <div class="stack" style="gap:16px"><div class="shead left" style="margin-bottom:0"><span class="eyebrow">Governance &amp; IQAC</span><h2>Statutory bodies</h2><span class="rule"><i></i></span></div><p class="muted">As an autonomous college, Marudham frames its own curriculum through Boards of Studies and an Academic Council, under UGC regulations and the University of Madras.</p></div>
+      <div>
+        <details class="acc" open><summary>Governing Body</summary><p>Meets twice a year. Approves budgets, appointments and new programmes. Includes nominees of the University, the State Government and the UGC.</p></details>
+        <details class="acc"><summary>Academic Council</summary><p>Approves syllabi, regulations and evaluation reforms recommended by the 22 Boards of Studies.</p></details>
+        <details class="acc"><summary>Internal Quality Assurance Cell (IQAC)</summary><p>Coordinates the AQAR, academic audit, feedback analysis and the NIRF and NAAC submissions. Coordinator: Dr. Leela Thomas.</p></details>
+        <details class="acc"><summary>Grievance, Anti-Ragging &amp; ICC</summary><p>Statutory committees with student representatives, reachable through the Help Desk and in confidence by email.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="ab-accr">
+    <div class="wrap">
+      <div class="shead"><span class="eyebrow">Accreditation &amp; rankings</span><h2>External assessment</h2><span class="rule"><i></i></span></div>
+      <div class="grid g4">
+        <div class="card rank"><span class="big-num">A++</span><b>NAAC 4th cycle</b><span class="muted" style="font-size:.88rem">CGPA 3.71 · valid to 2031</span></div>
+        <div class="card rank"><span class="big-num">34</span><b>NIRF 2026</b><span class="muted" style="font-size:.88rem">Colleges category, national</span></div>
+        <div class="card rank"><span class="big-num">CPE</span><b>UGC</b><span class="muted" style="font-size:.88rem">College with Potential for Excellence</span></div>
+        <div class="card rank"><span class="big-num">Star</span><b>DBT Star College</b><span class="muted" style="font-size:.88rem">Botany, Zoology, Chemistry</span></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+<!-- ================= ACADEMICS ================= -->
+<section class="page" data-page="academics" hidden>
+  <div class="phead"><img src="assets/img/lecture-hall.webp" alt=""><div class="wrap"><div class="crumbs"><a href="#home">Home</a>/<span>Academics</span></div><h1>How study works at Marudham</h1><p>All programmes follow the Choice Based Credit System with a Learning Outcome-based Curriculum Framework (LOCF), two semesters a year, and continuous internal assessment.</p></div></div>
+  <section class="section">
+    <div class="wrap split">
+      <div class="stack" style="gap:16px">
+        <div class="shead left" style="margin-bottom:0"><span class="eyebrow">Two shifts</span><h2>One college, two timetables</h2><span class="rule"><i></i></span></div>
+        <p class="muted">Aided programmes run in Shift I and self-financed programmes in Shift II. Both share the same faculty, library, labs and examination system.</p>
+        <div class="grid g2" style="margin-top:6px">
+          <div class="card" style="border-top:4px solid var(--band)"><span class="chip">Shift I · Aided</span><p class="big-num mono" style="font-size:1.6rem;margin-top:12px">8:00 – 1:30</p><p class="muted" style="font-size:.88rem">Monday to Saturday</p></div>
+          <div class="card" style="border-top:4px solid var(--accent)"><span class="chip gold">Shift II · Self-financed</span><p class="big-num mono" style="font-size:1.6rem;margin-top:12px">1:45 – 6:45</p><p class="muted" style="font-size:.88rem">Monday to Friday</p></div>
+        </div>
+        <img class="rounded-img" src="assets/img/classroom.webp" alt="Students discussing at a chalkboard" style="margin-top:6px">
+      </div>
+      <div class="stack" style="gap:16px">
+        <div class="shead left" style="margin-bottom:0"><span class="eyebrow">CBCS structure (UG)</span><h2>Five parts of a degree</h2><span class="rule"><i></i></span></div>
+        <div class="tbl-wrap"><table class="parts">
+          <thead><tr><th>Part</th><th>Component</th><th class="num">Credits</th></tr></thead>
+          <tbody>
+            <tr><td>I</td><td>Tamil / Hindi / French / Sanskrit</td><td class="num">12</td></tr>
+            <tr><td>II</td><td>English</td><td class="num">12</td></tr>
+            <tr><td>III</td><td>Core, Allied and Elective courses</td><td class="num">106</td></tr>
+            <tr><td>IV</td><td>Skill-based, Environmental Studies, Value Education</td><td class="num">17</td></tr>
+            <tr><td>V</td><td>Extension: NSS, NCC, Sports or Social Service League</td><td class="num">1</td></tr>
+          </tbody>
+        </table></div>
+        <p class="muted" style="font-size:.86rem">A three-year UG degree needs at least 148 credits over six semesters.</p>
+      </div>
+    </div>
+  </section>
+  <section class="section alt">
+    <div class="wrap">
+      <div class="shead"><span class="eyebrow">Academic calendar 2026–27</span><h2>Key dates this year</h2><span class="rule"><i></i></span></div>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Event</th><th>Odd semester</th><th>Even semester</th></tr></thead>
+        <tbody>
+          <tr><td>Classes begin</td><td class="mono">17 Jun 2026</td><td class="mono">04 Dec 2026</td></tr>
+          <tr><td>Continuous Internal Assessment I</td><td class="mono">05 – 09 Aug 2026</td><td class="mono">20 – 24 Jan 2027</td></tr>
+          <tr><td>Continuous Internal Assessment II</td><td class="mono">16 – 20 Sep 2026</td><td class="mono">03 – 07 Mar 2027</td></tr>
+          <tr><td>Last working day</td><td class="mono">24 Oct 2026</td><td class="mono">05 Apr 2027</td></tr>
+          <tr><td>End-semester examinations</td><td class="mono">02 – 21 Nov 2026</td><td class="mono">12 Apr – 03 May 2027</td></tr>
+          <tr><td>Vacation</td><td class="mono">22 Nov – 03 Dec 2026</td><td class="mono">04 May – 15 Jun 2027</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="wrap grid g3">
+      <a class="pcard" href="#syllabus"><div class="img"><img src="assets/img/chalkboard.webp" alt="Student writing equations on a blackboard"></div><div class="body"><h3>Examinations &amp; syllabus</h3><p class="muted">Internal assessment carries 25 marks and the end-semester examination 75. Timetables appear on the notice board.</p><span class="link">Browse syllabi <svg class="ico"><use href="#i-arrow"/></svg></span></div></a>
+      <a class="pcard" href="#achievements"><div class="img"><img src="assets/img/lab.webp" alt="Researcher with a microscope and flasks"></div><div class="body"><h3>Research</h3><p class="muted">Eleven research departments guide 214 Ph.D. scholars. Seed grants of up to ₹2 lakh fund faculty and student projects.</p><span class="link">Research highlights <svg class="ico"><use href="#i-arrow"/></svg></span></div></a>
+      <a class="pcard" href="#programmes"><div class="img"><img src="assets/img/group-study.webp" alt="Students working on laptops together"></div><div class="body"><h3>Value-added courses</h3><p class="muted">Thirty-eight short certificate courses, from Python for Data to Tamil Epigraphy, open to any student.</p><span class="link">See certificates <svg class="ico"><use href="#i-arrow"/></svg></span></div></a>
+    </div>
+  </section>
+</section>
+
+<!-- ================= PROGRAMMES ================= -->
+<section class="page" data-page="programmes" hidden>
+  <div class="phead"><img src="assets/img/steps.webp" alt=""><div class="wrap"><div class="crumbs"><a href="#home">Home</a>/<a href="#academics">Academics</a>/<span>Programmes</span></div><h1>Programmes offered</h1><p>Undergraduate, postgraduate, research and certificate programmes. Seats and shifts are for the 2027–28 intake.</p></div></div>
+  <section class="section">
+    <div class="wrap">
+      <div class="filters">
+        <div class="seg" id="progSeg"><button class="on" data-l="all" type="button">All</button><button data-l="UG" type="button">Undergraduate</button><button data-l="PG" type="button">Postgraduate</button><button data-l="Research" type="button">Research</button><button data-l="Certificate" type="button">Certificate</button></div>
+        <div class="search"><svg class="ico"><use href="#i-search"/></svg><input class="input" id="progQ" type="search" placeholder="Search programmes, e.g. Chemistry" aria-label="Search programmes"></div>
+      </div>
+      <p class="muted" id="progCount" style="font-size:.88rem;margin-bottom:16px"></p>
+      <div class="grid g3" id="progGrid"></div>
+    </div>
+  </section>
+</section>
+
+<!-- ================= DEPARTMENTS ================= -->
+<section class="page" data-page="departments" hidden>
+  <div class="phead"><img src="assets/img/library-stacks.webp" alt=""><div class="wrap"><div class="crumbs"><a href="#home">Home</a>/<a href="#academics">Academics</a>/<span>Departments</span></div><h1>Departments</h1><p>Sixteen departments in the Schools of Humanities, Sciences, and Commerce &amp; Management. Choose a department to see its programmes, labs and head.</p></div></div>
+  <section class="section">
+    <div class="wrap">
+      <div id="deptDetail"></div>
+      <div class="filters"><div class="seg" id="deptSeg"><button class="on" data-s="all" type="button">All schools</button><button data-s="Humanities" type="button">Humanities</button><button data-s="Sciences" type="button">Sciences</button><button data-s="Commerce &amp; Management" type="button">Commerce &amp; Management</button></div></div>
+      <div class="grid g4" id="deptGrid"></div>
+    </div>
+  </section>
+</section>
+
+<!-- ================= FACULTY ================= -->
+<section class="page" data-page="faculty" hidden>
+  <div class="phead"><img src="assets/img/teaching.webp" alt=""><div class="wrap"><div class="crumbs"><a href="#home">Home</a>/<a href="#academics">Academics</a>/<span>Faculty</span></div><h1>Faculty directory</h1><p>318 teachers, 236 with doctorates and 61 recognised research supervisors. A sample of the directory is shown here.</p></div></div>
+  <section class="section">
+    <div class="wrap">
+      <div class="filters">
+        <div class="search"><svg class="ico"><use href="#i-search"/></svg><input class="input" id="facQ" type="search" placeholder="Search by name or specialisation" aria-label="Search faculty"></div>
+        <select class="input" id="facDept" style="width:auto;min-width:230px" aria-label="Filter by department"><option value="">All departments</option></select>
+      </div>
+      <p class="muted" id="facCount" style="font-size:.88rem;margin-bottom:16px"></p>
+      <div class="grid g3" id="facGrid"></div>
+    </div>
+  </section>
+</section>
+
+<!-- ================= SYLLABUS ================= -->
+<section class="page" data-page="syllabus" hidden>
+  <div class="phead"><img src="assets/img/desk.webp" alt=""><div class="wrap"><div class="crumbs"><a href="#home">Home</a>/<a href="#academics">Academics</a>/<span>Syllabus</span></div><h1>Syllabus &amp; regulations</h1><p>Syllabi approved by the Boards of Studies and the Academic Council. Regulation 2023 applies to students admitted from 2023–24; Regulation 2024 (LOCF, revised) from 2024–25.</p></div></div>
+  <section class="section">
+    <div class="wrap">
+      <div class="filters">
+        <div class="seg" id="sylSeg"><button class="on" data-l="all" type="button">All</button><button data-l="UG" type="button">UG</button><button data-l="PG" type="button">PG</button></div>
+        <div class="search"><svg class="ico"><use href="#i-search"/></svg><input class="input" id="sylQ" type="search" placeholder="Find a programme" aria-label="Search syllabus"></div>
+      </div>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Code</th><th>Programme</th><th>Regulation</th><th>Approved by AC</th><th class="num">Semesters</th><th>Document</th></tr></thead>
+        <tbody id="sylBody"></tbody>
+      </table></div>
+    </div>
+  </section>
+  <section class="section alt">
+    <div class="wrap">
+      <div class="shead"><span class="eyebrow">Sample course structure</span><h2>B.Sc. Computer Science · Semester I</h2><span class="rule"><i></i></span><p class="lede">A first semester under Regulation 2024. Course codes follow Year–Programme–Type–Number.</p></div>
+      <div class="tbl-wrap"><table class="parts">
+        <thead><tr><th>Part</th><th>Course code</th><th>Course title</th><th class="num">Hours/week</th><th class="num">Credits</th><th class="num">CIA / ESE</th></tr></thead>
+        <tbody>
+          <tr><td>I</td><td class="mono">24UTAL101</td><td>Tamil I: Modern Poetry and Prose</td><td class="num">6</td><td class="num">3</td><td class="num mono">25 / 75</td></tr>
+          <tr><td>II</td><td class="mono">24UENL101</td><td>General English I</td><td class="num">6</td><td class="num">3</td><td class="num mono">25 / 75</td></tr>
+          <tr><td>III</td><td class="mono">24UCSC101</td><td>Core: Programming in C</td><td class="num">5</td><td class="num">5</td><td class="num mono">25 / 75</td></tr>
+          <tr><td>III</td><td class="mono">24UCSP101</td><td>Core Practical: C Programming Lab</td><td class="num">3</td><td class="num">3</td><td class="num mono">40 / 60</td></tr>
+          <tr><td>III</td><td class="mono">24UMAA101</td><td>Allied: Discrete Mathematics</td><td class="num">5</td><td class="num">4</td><td class="num mono">25 / 75</td></tr>
+          <tr><td>IV</td><td class="mono">24UCSS101</td><td>Skill: Office Automation</td><td class="num">2</td><td class="num">2</td><td class="num mono">40 / 60</td></tr>
+          <tr><td>IV</td><td class="mono">24UFCE101</td><td>Foundation: Environmental Studies</td><td class="num">2</td><td class="num">2</td><td class="num mono">25 / 75</td></tr>
+          <tr><td colspan="3"><b>Total</b></td><td class="num"><b>29</b></td><td class="num"><b>22</b></td><td></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </section>
+</section>
+
+<!-- ================= ADMISSION ================= -->
+<section class="page" data-page="admission" hidden>
+  <div class="phead"><img src="assets/img/head-convocation.webp" alt=""><div class="wrap"><div class="crumbs"><a href="#home">Home</a>/<span>Admission</span></div><h1>Admissions 2027–28</h1><p>Admission is by merit in the qualifying examination, following Government of Tamil Nadu reservation norms and the college’s minority status.</p>
+    <div class="countdown" id="countdown" aria-label="Time until applications open"></div>
+    <div class="btns"><a class="btn btn-accent" href="#admission" data-jump="ad-form">Register interest</a><a class="btn btn-light" href="#programmes">View programmes</a></div></div></div>
+  <nav class="subnav" aria-label="Admission sections"><div class="wrap"><a href="#admission" data-jump="ad-steps">Process</a><a href="#admission" data-jump="ad-dates">Important dates</a><a href="#admission" data-jump="ad-elig">Eligibility</a><a href="#admission" data-jump="ad-fees">Fees</a><a href="#admission" data-jump="ad-faq">FAQ</a><a href="#admission" data-jump="ad-form">Enquiry</a></div></nav>
+  <section class="section" id="ad-steps">
+    <div class="wrap">
+      <div class="shead"><span class="eyebrow">How to apply</span><h2>Five steps from application to first day</h2><span class="rule"><i></i></span></div>
+      <div class="steps">
+        <div><h4>Register online</h4><p>Create an account with your mobile number and email.</p></div>
+        <div><h4>Fill the application</h4><p>Choose up to three programmes and upload marks and certificates.</p></div>
+        <div><h4>Pay the fee</h4><p>₹60 for UG, ₹300 for PG. SC/ST applicants are exempt.</p></div>
+        <div><h4>Merit list &amp; counselling</h4><p>Lists by programme and community; counselling on campus.</p></div>
+        <div><h4>Confirm &amp; join</h4><p>Verify originals, pay fees and attend the orientation.</p></div>
+      </div>
+    </div>
+  </section>
+  <section class="section alt" id="ad-dates">
+    <div class="wrap split center">
+      <div class="stack" style="gap:16px"><div class="shead left" style="margin-bottom:0"><span class="eyebrow">Important dates</span><h2>Calendar for the 2027 intake</h2><span class="rule"><i></i></span></div><p class="muted">Dates are provisional until the State Board announces the Class XII results.</p><img class="rounded-img" src="assets/img/caps.webp" alt="Graduates celebrating"></div>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Stage</th><th>UG</th><th>PG</th></tr></thead>
+        <tbody>
+          <tr><td>Applications open</td><td class="mono">02 May 2027</td><td class="mono">02 May 2027</td></tr>
+          <tr><td>Last date to apply</td><td class="mono">31 May 2027</td><td class="mono">20 Jun 2027</td></tr>
+          <tr><td>First merit list</td><td class="mono">06 Jun 2027</td><td class="mono">25 Jun 2027</td></tr>
+          <tr><td>Counselling</td><td class="mono">09 – 14 Jun 2027</td><td class="mono">28 Jun – 01 Jul</td></tr>
+          <tr><td>Classes begin</td><td class="mono">21 Jun 2027</td><td class="mono">05 Jul 2027</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </section>
+  <section class="section" id="ad-elig">
+    <div class="wrap grid g2">
+      <div class="card stack" style="border-top:4px solid var(--band)"><span class="eyebrow">Eligibility</span><h3>Undergraduate</h3><ul class="check"><li>Pass in Class XII (HSC) from a recognised board</li><li>B.Sc. sciences need the relevant subject in Class XII</li><li>B.Com and BBA need Commerce or Mathematics in Class XII</li><li>Sports and NCC quota: certificates from district level or above</li></ul></div>
+      <div class="card stack" style="border-top:4px solid var(--accent)"><span class="eyebrow">Eligibility</span><h3>Postgraduate</h3><ul class="check"><li>Bachelor’s degree in the relevant discipline</li><li>Minimum 50% in Part III (45% for SC/ST)</li><li>MCA needs Mathematics at Class XII or degree level</li><li>Ph.D.: entrance test and interview, per UGC 2022 rules</li></ul></div>
+      <div class="card stack" style="grid-column:1/-1"><span class="eyebrow">Documents</span><h3>Bring these to counselling</h3><div class="grid g3" style="gap:10px"><ul class="check"><li>Class X and XII mark sheets</li><li>Transfer certificate</li></ul><ul class="check"><li>Community certificate</li><li>Aadhaar card</li></ul><ul class="check"><li>4 passport-size photographs</li><li>First-graduate certificate, if any</li></ul></div></div>
+    </div>
+  </section>
+  <section class="section alt" id="ad-fees">
+    <div class="wrap">
+      <div class="shead"><span class="eyebrow">Fee structure 2027–28</span><h2>Annual fees</h2><span class="rule"><i></i></span><p class="lede">Tuition, special and examination fees per year. Hostel fees are separate.</p></div>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Category</th><th>Example programmes</th><th class="num">Annual fee (₹)</th></tr></thead>
+        <tbody>
+          <tr><td><span class="chip">Aided · Shift I</span></td><td>B.A. English, B.Sc. Botany, B.Com</td><td class="num mono">4,850</td></tr>
+          <tr><td><span class="chip gold">Self-financed · Shift II</span></td><td>BCA, B.Sc. Psychology, BBA</td><td class="num mono">38,000 – 52,000</td></tr>
+          <tr><td><span class="chip gold">Self-financed PG</span></td><td>MCA, M.Sc. Computer Science, MSW</td><td class="num mono">46,000 – 68,000</td></tr>
+          <tr><td><span class="chip">Hostel</span></td><td>Bishop Heber, Selaiyur and St. Thomas’s Halls</td><td class="num mono">72,000 incl. mess</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="wrap split">
+      <div id="ad-faq">
+        <div class="shead left" style="margin-bottom:20px"><span class="eyebrow">FAQ</span><h2>Common questions</h2><span class="rule"><i></i></span></div>
+        <details class="acc"><summary>Is there an entrance test for UG admission?</summary><p>No. UG admission is on Class XII marks. Visual Communication has a short aptitude interview.</p></details>
+        <details class="acc"><summary>Can I apply for more than one programme?</summary><p>Yes. One application covers up to three programmes in order of preference.</p></details>
+        <details class="acc"><summary>Are scholarships available?</summary><p>The Scholarship Cell processes state and central scholarships. The college also funds 400 merit-cum-means scholarships every year.</p></details>
+        <details class="acc"><summary>Is hostel accommodation guaranteed?</summary><p>Hostel seats are allotted by distance from home and merit. Apply in the same form.</p></details>
+      </div>
+      <div class="card form-card" id="ad-form">
+        <h3>Register your interest</h3><p class="muted" style="font-size:.9rem;margin:6px 0 18px">We will send the prospectus and a reminder when applications open.</p>
+        <form class="js-form" id="admForm" data-ok="Thank you. Your interest is recorded in this prototype. On the live site you would receive the prospectus by email.">
+          <div class="grid g2" style="gap:16px">
+            <div class="field"><label for="ad-name">Full name</label><input class="input" id="ad-name" required placeholder="As in your mark sheet"></div>
+            <div class="field"><label for="ad-phone">Mobile</label><input class="input" id="ad-phone" required inputmode="tel" placeholder="10-digit number" pattern="[0-9]{10}"></div>
+            <div class="field"><label for="ad-email">Email</label><input class="input" id="ad-email" type="email" required placeholder="name@example.com"></div>
+            <div class="field"><label for="ad-level">Level</label><select class="input" id="ad-level"><option>Undergraduate</option><option>Postgraduate</option><option>Ph.D.</option></select></div>
+            <div class="field" style="grid-column:1/-1"><label for="ad-prog">Programme of interest</label><select class="input" id="ad-prog"></select></div>
+          </div>
+          <button class="btn btn-brand" type="submit" style="margin-top:18px">Register interest</button>
+          <div class="form-ok" hidden style="margin-top:14px"></div>
+        </form>
+      </div>
+    </div>
+  </section>
+</section>
+
+<!-- ================= LIBRARY ================= -->
+<section class="page" data-page="library" hidden>
+  <div class="phead"><img src="assets/img/head-library.webp" alt=""><div class="wrap"><div class="crumbs"><a href="#home">Home</a>/<span>Library</span></div><h1>Centenary Library</h1><p>Three floors, 420 reading seats, a rare-books room with palm-leaf manuscripts, and remote access to more than 9,000 e-journals.</p></div></div>
+  <section class="section">
+    <div class="wrap">
+      <div class="stats light">
+        <div><strong>1,24,500</strong><span>print volumes</span></div>
+        <div><strong>186</strong><span>print journals</span></div>
+        <div><strong>9,000+</strong><span>e-journals via N-LIST</span></div>
+        <div><strong>2,340</strong><span>theses and dissertations</span></div>
+      </div>
+    </div>
+  </section>
+  <section class="section alt">
+    <div class="wrap split wide-l">
+      <div class="card form-card">
+        <h3>Search the catalogue (OPAC)</h3><p class="muted" style="font-size:.9rem;margin:6px 0 16px">A demo with sample records. Try “Tamil”, “Python” or “ecology”.</p>
+        <div class="search" style="margin-bottom:8px"><svg class="ico"><use href="#i-search"/></svg><input class="input" id="opacQ" type="search" placeholder="Title, author or subject" aria-label="Search the library catalogue"></div>
+        <div class="opac-res" id="opacRes"></div>
+      </div>
+      <div class="stack" style="gap:20px">
+        <div class="card"><h4 style="margin-bottom:12px">Opening hours</h4><dl class="kv"><dt>Mon – Fri</dt><dd class="mono">8:00 am – 7:00 pm</dd><dt>Saturday</dt><dd class="mono">9:00 am – 4:00 pm</dd><dt>Exam weeks</dt><dd class="mono">till 9:00 pm</dd><dt>Sunday</dt><dd>Closed</dd></dl></div>
+        <div class="card"><h4 style="margin-bottom:12px">E-resources</h4><div class="pill-row"><span class="chip">N-LIST</span><span class="chip">DELNET</span><span class="chip">National Digital Library</span><span class="chip">Shodhganga</span><span class="chip">JSTOR</span><span class="chip">NPTEL</span></div></div>
+        <div class="card"><h4 style="margin-bottom:12px">Borrowing</h4><dl class="kv"><dt>UG students</dt><dd>3 books · 14 days</dd><dt>PG &amp; scholars</dt><dd>5 books · 21 days</dd><dt>Faculty</dt><dd>10 books · 1 semester</dd></dl></div>
+      </div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="wrap grid g3">
+      <div class="pcard" style="cursor:default"><div class="img"><img src="assets/img/reading-room.webp" alt="Quiet reading room with wooden shelves"></div><div class="body"><h3>Reading halls</h3><p class="muted">420 seats over three floors, with a silent floor for postgraduate and research scholars.</p></div></div>
+      <div class="pcard" style="cursor:default"><div class="img"><img src="assets/img/shelves.webp" alt="Rows of library shelves"></div><div class="body"><h3>Open stacks</h3><p class="muted">Dewey-classified open access shelves with RFID self-checkout.</p></div></div>
+      <div class="pcard" style="cursor:default"><div class="img"><img src="assets/img/library-cheer.webp" alt="Students celebrating in the library"></div><div class="body"><h3>Digital library</h3><p class="muted">60 networked computers, e-book readers and a scanning station for theses.</p></div></div>
+    </div>
+  </section>
+</section>
+
+<!-- ================= PLACEMENT ================= -->
+<section class="page" data-page="placement" hidden>
+  <div class="phead"><img src="assets/img/placement-drive.webp" alt=""><div class="wrap"><div class="crumbs"><a href="#home">Home</a>/<span>Placement</span></div><h1>Career Development &amp; Placement Cell</h1><p>Training from the second year, internships in the fifth semester and campus drives from August of the final year.</p></div></div>
+  <section class="section">
+    <div class="wrap">
+      <div class="stats light">
+        <div><strong>612</strong><span>offers, 2025–26</span></div>
+        <div><strong>214</strong><span>recruiters on campus</span></div>
+        <div><strong>18.5 LPA</strong><span>highest package</span></div>
+        <div><strong>4.2 LPA</strong><span>median package</span></div>
+      </div>
+    </div>
+  </section>
+  <section class="section alt">
+    <div class="wrap split wide-l">
+      <div class="stack" style="gap:16px">
+        <div class="shead left" style="margin-bottom:0"><span class="eyebrow">Year-wise record</span><h2>Five years of placements</h2><span class="rule"><i></i></span></div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Batch</th><th class="num">Eligible</th><th class="num">Placed</th><th class="num">Offers</th><th class="num">Highest (LPA)</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">2025–26</td><td class="num">658</td><td class="num">572</td><td class="num">612</td><td class="num">18.5</td></tr>
+            <tr><td class="mono">2024–25</td><td class="num">641</td><td class="num">538</td><td class="num">571</td><td class="num">14.0</td></tr>
+            <tr><td class="mono">2023–24</td><td class="num">630</td><td class="num">497</td><td class="num">520</td><td class="num">12.4</td></tr>
+            <tr><td class="mono">2022–23</td><td class="num">602</td><td class="num">481</td><td class="num">506</td><td class="num">11.0</td></tr>
+            <tr><td class="mono">2021–22</td><td class="num">588</td><td class="num">433</td><td class="num">449</td><td class="num">9.6</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+      <div class="stack" style="gap:16px">
+        <img class="rounded-img" src="assets/img/handshake.webp" alt="Interview handshake">
+        <ul class="check"><li>Aptitude and reasoning, 60 hours in years II and III</li><li>Spoken English and group discussion labs</li><li>Bootcamps: Tally, Python, SQL</li><li>Mock interviews with alumni volunteers</li><li>Guidance for GATE, NET, CAT and GRE</li></ul>
+        <div class="card" style="padding:16px 18px"><b>Placement Officer</b><p class="muted" style="font-size:.9rem">Dr. Anand Selvaraj · placement@marudham.edu.in</p></div>
+      </div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="wrap">
+      <div class="shead"><span class="eyebrow">Recruiters</span><h2>Who hires from Marudham</h2><span class="rule"><i></i></span></div>
+      <div class="logos"><div class="marquee-run" id="recruiters"></div></div>
+    </div>
+  </section>
+</section>
+
+<!-- ================= ACHIEVEMENTS ================= -->
+<section class="page" data-page="achievements" hidden>
+  <div class="phead"><img src="assets/img/convocation.webp" alt=""><div class="wrap"><div class="crumbs"><a href="#home">Home</a>/<span>Achievements</span></div><h1>Achievements</h1><p>Ranks, research, sport and service from the last academic year.</p></div></div>
+  <section class="section">
+    <div class="wrap grid g4">
+      <div class="card rank"><span class="big-num">46</span><b>University rank holders</b><span class="muted" style="font-size:.88rem">including 9 gold medallists, 2026</span></div>
+      <div class="card rank"><span class="big-num">12</span><b>Patents granted</b><span class="muted" style="font-size:.88rem">Chemistry, Physics, CS since 2020</span></div>
+      <div class="card rank"><span class="big-num">₹3.4 Cr</span><b>Research funding</b><span class="muted" style="font-size:.88rem">active DST, DBT, ICSSR projects</span></div>
+      <div class="card rank"><span class="big-num">418</span><b>Scopus publications</b><span class="muted" style="font-size:.88rem">2021 – 2026</span></div>
+    </div>
+  </section>
+  <section class="section alt">
+    <div class="wrap">
+      <div class="filters" style="justify-content:center"><div class="seg" id="achSeg"><button class="on" data-c="all" type="button">All</button><button data-c="Academic" type="button">Academic</button><button data-c="Research" type="button">Research</button><button data-c="Sports" type="button">Sports</button><button data-c="Cultural" type="button">Cultural &amp; Service</button></div></div>
+      <div class="grid g3" id="achGrid"></div>
+    </div>
+  </section>
+</section>
+
+<!-- ================= GALLERY ================= -->
+<section class="page" data-page="gallery" hidden>
+  <div class="phead"><img src="assets/img/auditorium.webp" alt=""><div class="wrap"><div class="crumbs"><a href="#home">Home</a>/<span>Gallery</span></div><h1>Gallery</h1><p>Events, campus and student life. Select a photo to view it full size.</p></div></div>
+  <section class="section">
+    <div class="wrap">
+      <div class="filters" style="justify-content:center"><div class="seg" id="galSeg"><button class="on" data-c="all" type="button">All</button><button data-c="Campus" type="button">Campus</button><button data-c="Events" type="button">Events</button><button data-c="Sports" type="button">Sports</button><button data-c="Academic" type="button">Academic</button></div></div>
+      <div class="gal" id="galGrid"></div>
+    </div>
+  </section>
+</section>
+
+<!-- ================= ALUMNI ================= -->
+<section class="page" data-page="alumni" hidden>
+  <div class="phead"><img src="assets/img/graduates.webp" alt=""><div class="wrap"><div class="crumbs"><a href="#home">Home</a>/<span>Alumni</span></div><h1>Marudham Alumni Association</h1><p>More than 1,40,000 alumni in 60 countries, with chapters in seven cities.</p></div></div>
+  <section class="section">
+    <div class="wrap">
+      <div class="shead"><span class="eyebrow">Distinguished alumni</span><h2>A few of our graduates</h2><span class="rule"><i></i></span></div>
+      <div class="grid g4" id="alumGrid"></div>
+    </div>
+  </section>
+  <section class="section" style="padding-block:0">
+    <div class="wrap">
+      <div class="cta">
+        <img src="assets/img/founders-day.webp" alt="">
+        <div class="in">
+          <div><span class="eyebrow" style="color:#FFD26A">Homecoming 2027</span><h2 style="margin-top:8px">Reunion for the batches of 1977, 1987, 2002 and 2017</h2><p>Saturday 23 January 2027 · Anderson Hall and the Main Lawn. Heritage tours, a hall dinner and the alumni cricket match.</p><p style="margin-top:8px"><b>Chapters:</b> Chennai · Bengaluru · Hyderabad · Dubai · Singapore · London · Toronto</p></div>
+          <div class="btns"><a class="btn btn-accent" href="#alumni" data-jump="al-form">Register for homecoming</a></div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="wrap split">
+      <div class="stack" style="gap:14px"><div class="shead left" style="margin-bottom:0"><span class="eyebrow">Give back</span><h2>Ways to stay involved</h2><span class="rule"><i></i></span></div>
+        <ul class="check"><li>Mentor a final-year student for one semester</li><li>Fund a merit-cum-means scholarship (₹25,000 a year)</li><li>Speak at a department seminar</li><li>Offer internships through the placement cell</li></ul>
+        <img class="rounded-img" src="assets/img/mentoring.webp" alt="Alumnus mentoring a student"></div>
+      <div class="card form-card" id="al-form"><h3>Join the alumni network</h3><p class="muted" style="font-size:.9rem;margin:6px 0 18px">Update your details to receive the newsletter and event invitations.</p>
+        <form class="js-form" id="alForm" data-ok="Welcome back. Your details are recorded in this prototype only.">
+          <div class="grid g2" style="gap:16px">
+            <div class="field"><label for="al-name">Name</label><input class="input" id="al-name" required></div>
+            <div class="field"><label for="al-batch">Batch (year of leaving)</label><input class="input" id="al-batch" required inputmode="numeric" placeholder="e.g. 2012"></div>
+            <div class="field"><label for="al-prog">Programme</label><input class="input" id="al-prog" placeholder="e.g. B.Sc. Physics"></div>
+            <div class="field"><label for="al-city">Current city</label><input class="input" id="al-city"></div>
+            <div class="field" style="grid-column:1/-1"><label for="al-email">Email</label><input class="input" id="al-email" type="email" required></div>
+          </div>
+          <button class="btn btn-brand" type="submit" style="margin-top:18px">Join network</button>
+          <div class="form-ok" hidden style="margin-top:14px"></div>
+        </form>
+      </div>
+    </div>
+  </section>
+</section>
+
+<!-- ================= HELP DESK ================= -->
+<section class="page" data-page="helpdesk" hidden>
+  <div class="phead"><img src="assets/img/student-bench.webp" alt=""><div class="wrap"><div class="crumbs"><a href="#home">Home</a>/<span>Help Desk</span></div><h1>Help Desk</h1><p>One place for questions from students, parents and visitors. Pick a topic, or raise a ticket and we will reply within two working days.</p></div></div>
+  <section class="section">
+    <div class="wrap grid g4" id="hdGrid"></div>
+  </section>
+  <section class="section alt">
+    <div class="wrap split wide-l">
+      <div class="card form-card">
+        <h3>Raise a ticket</h3><p class="muted" style="font-size:.9rem;margin:6px 0 18px">Tell us what you need. You will get a ticket number to quote in follow-ups.</p>
+        <form id="hdForm">
+          <div class="grid g2" style="gap:16px">
+            <div class="field"><label for="hd-name">Name</label><input class="input" id="hd-name" required></div>
+            <div class="field"><label for="hd-role">I am a</label><select class="input" id="hd-role"><option>Current student</option><option>Parent</option><option>Prospective student</option><option>Alumnus</option><option>Visitor</option></select></div>
+            <div class="field"><label for="hd-cat">Topic</label><select class="input" id="hd-cat"></select></div>
+            <div class="field"><label for="hd-id">Register number (if student)</label><input class="input mono" id="hd-id" placeholder="e.g. 24UCS0412"></div>
+            <div class="field" style="grid-column:1/-1"><label for="hd-msg">Your question</label><textarea class="input" id="hd-msg" rows="4" required></textarea></div>
+          </div>
+          <button class="btn btn-brand" type="submit" style="margin-top:18px">Submit ticket</button>
+          <div class="form-ok" hidden style="margin-top:14px"></div>
+        </form>
+      </div>
+      <div class="stack" style="gap:16px">
+        <div class="card"><h4 style="margin-bottom:12px">Front office</h4><dl class="kv"><dt>Hours</dt><dd class="mono">9:00 am – 5:00 pm</dd><dt>Saturday</dt><dd class="mono">9:00 am – 1:00 pm</dd><dt>Phone</dt><dd class="mono">+91 44 2239 4100</dd><dt>Location</dt><dd>Ground floor, Main Block</dd></dl></div>
+        <div class="card" style="border:2px solid var(--accent)"><h4 style="margin-bottom:6px">Anti-ragging helpline</h4><p class="muted" style="font-size:.9rem">National helpline, 24 hours</p><p class="mono" style="font-size:1.25rem;margin-top:6px;color:var(--brand)">1800-180-5522</p></div>
+        <div><details class="acc"><summary>I lost my ID card</summary><p>Report at the front office with a written request. A duplicate costs ₹150 and is ready in three working days.</p></details>
+        <details class="acc"><summary>How do I get a bonafide certificate?</summary><p>Request it through the Help Desk under “Certificates”. It is issued within two working days.</p></details>
+        <details class="acc"><summary>Who handles revaluation?</summary><p>The Office of the Controller of Examinations, within 10 days of publication.</p></details></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+<!-- ================= CONTACT ================= -->
+<section class="page" data-page="contact" hidden>
+  <div class="phead"><img src="assets/img/hero-3.webp" alt=""><div class="wrap"><div class="crumbs"><a href="#home">Home</a>/<span>Contact</span></div><h1>Contact &amp; directions</h1><p>The campus is a 6-minute walk from Tambaram East railway station on the Chennai suburban line.</p></div></div>
+  <section class="section">
+    <div class="wrap split">
+      <div class="stack" style="gap:18px">
+        <div class="map" aria-label="Map of the campus area">
+          <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice">
+            <rect class="blk" x="10" y="10" width="120" height="90" rx="6"/><rect class="blk" x="150" y="10" width="90" height="90" rx="6"/><rect class="park" x="260" y="10" width="130" height="150" rx="10"/>
+            <rect class="blk" x="10" y="120" width="120" height="170" rx="6"/><rect class="blk" x="150" y="190" width="90" height="100" rx="6"/><rect class="blk" x="260" y="180" width="130" height="110" rx="6"/>
+            <path class="road" d="M-10 110 H410"/><path class="road" d="M140 -10 V310"/><path class="road2" d="M250 -10 V310"/><path class="road2" d="M140 170 H260"/>
+            <text class="lbl" x="275" y="90">Campus forest</text><text class="lbl" x="18" y="105">GST Road</text><text class="lbl" x="18" y="200">Tambaram East</text><text class="lbl" x="20" y="214">station</text>
+            <path class="pin" d="M200 150c-10 0-16 7-16 15 0 11 16 25 16 25s16-14 16-25c0-8-6-15-16-15z"/><circle cx="200" cy="165" r="5" fill="#fff"/>
+          </svg>
+        </div>
+        <a class="btn btn-ghost" href="https://www.google.com/maps/search/Tambaram+East+Chennai" target="_blank" rel="noopener" style="align-self:flex-start"><svg class="ico"><use href="#i-pin"/></svg> Open in Google Maps</a>
+      </div>
+      <div class="stack" style="gap:20px">
+        <div class="card form-card"><h3 style="margin-bottom:14px">Marudham College of Arts &amp; Science</h3>
+          <dl class="kv"><dt>Address</dt><dd>14 College Road, Tambaram East,<br>Chennai 600 059, Tamil Nadu</dd><dt>Phone</dt><dd class="mono">+91 44 2239 4100</dd><dt>Admissions</dt><dd class="mono">+91 44 2239 4122</dd><dt>Email</dt><dd><span class="mono" id="mailTxt">office@marudham.edu.in</span> <button class="link" type="button" id="copyMail" style="font-size:.85rem;margin-left:6px">Copy</button></dd></dl>
+        </div>
+        <div class="card"><h3 style="margin-bottom:6px">Send a message</h3><p class="muted" style="font-size:.9rem;margin-bottom:16px">For admissions, use the Admission page. For student issues, use the Help Desk.</p>
+          <form class="js-form" id="ctForm" data-ok="Message recorded in this prototype. The live site would send it to the office.">
+            <div class="grid g2" style="gap:16px">
+              <div class="field"><label for="ct-name">Name</label><input class="input" id="ct-name" required></div>
+              <div class="field"><label for="ct-email">Email</label><input class="input" id="ct-email" type="email" required></div>
+              <div class="field" style="grid-column:1/-1"><label for="ct-msg">Message</label><textarea class="input" id="ct-msg" rows="4" required></textarea></div>
+            </div>
+            <button class="btn btn-brand" type="submit" style="margin-top:16px">Send message</button>
+            <div class="form-ok" hidden style="margin-top:14px"></div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="section alt">
+    <div class="wrap">
+      <div class="shead"><span class="eyebrow">Offices</span><h2>Who to call</h2><span class="rule"><i></i></span></div>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Office</th><th>Contact person</th><th>Extension</th><th>Hours</th></tr></thead>
+        <tbody>
+          <tr><td>Principal’s Office</td><td>Mrs. Kavitha R., PA</td><td class="mono">4101</td><td class="mono">9:00 – 5:00</td></tr>
+          <tr><td>Admissions</td><td>Dr. Joel Prabhakar</td><td class="mono">4122</td><td class="mono">9:00 – 5:00</td></tr>
+          <tr><td>Controller of Examinations</td><td>Dr. N. Lakshmi</td><td class="mono">4140</td><td class="mono">10:00 – 4:00</td></tr>
+          <tr><td>Hostels (Warden’s office)</td><td>Rev. Samuel Isaac</td><td class="mono">4170</td><td class="mono">24 hours</td></tr>
+          <tr><td>Placement Cell</td><td>Dr. Anand Selvaraj</td><td class="mono">4155</td><td class="mono">9:30 – 5:00</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </section>
+</section>
+
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="fgrid">
+      <div class="stack" style="gap:14px">
+        <span class="fname">Marudham College<br>of Arts &amp; Science</span>
+        <p>Autonomous, affiliated to the University of Madras. A Christian minority institution, re-accredited A++ by NAAC.</p>
+        <div class="social" aria-label="Social media"><a href="#contact" aria-label="Facebook">f</a><a href="#contact" aria-label="Instagram">ig</a><a href="#contact" aria-label="YouTube">yt</a><a href="#contact" aria-label="LinkedIn">in</a></div>
+      </div>
+      <div><h4>Academics</h4><ul><li><a href="#programmes">Programmes</a></li><li><a href="#departments">Departments</a></li><li><a href="#faculty">Faculty</a></li><li><a href="#syllabus">Syllabus</a></li><li><a href="#library">Library</a></li></ul></div>
+      <div><h4>Quick links</h4><ul><li><a href="#admission">Admission</a></li><li><a href="#placement">Placement</a></li><li><a href="#achievements">Achievements</a></li><li><a href="#gallery">Gallery</a></li><li><a href="#alumni">Alumni</a></li><li><a href="#helpdesk">Help Desk</a></li></ul></div>
+      <div><h4>Reach us</h4>
+        <div class="fcontact">
+          <div><svg class="ico"><use href="#i-pin"/></svg><span>14 College Road, Tambaram East, Chennai 600 059</span></div>
+          <div><svg class="ico"><use href="#i-phone"/></svg><span class="mono">+91 44 2239 4100</span></div>
+          <div><svg class="ico"><use href="#i-mail"/></svg><span>office@marudham.edu.in</span></div>
+          <div><svg class="ico"><use href="#i-clock"/></svg><span>Mon – Sat, 9:00 am – 5:00 pm</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="fbase"><span>© 2026 Marudham College of Arts &amp; Science. Design prototype with sample content.</span><span>Anti-ragging · RTI · Grievance · Privacy policy</span></div>
+  </div>
+</footer>
+
+<a class="side-tab" href="#admission">Admission Enquiry</a>
+<button class="to-top" id="toTop" type="button" aria-label="Back to top" hidden><svg class="ico"><use href="#i-up"/></svg></button>
+
+<div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true" aria-label="Photo viewer">
+  <button class="lb-btn lb-close" id="lbClose" type="button" aria-label="Close photo"><svg class="ico"><use href="#i-x"/></svg></button>
+  <button class="lb-btn lb-prev" id="lbPrev" type="button" aria-label="Previous photo"><svg class="ico"><use href="#i-left"/></svg></button>
+  <figure><img id="lbImg" src="assets/img/hero-1.webp" alt=""><figcaption><b id="lbCap"></b><span id="lbCount"></span></figcaption></figure>
+  <button class="lb-btn lb-next" id="lbNext" type="button" aria-label="Next photo"><svg class="ico"><use href="#i-right"/></svg></button>
+</div>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+(function(){
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const IMG=n=>`assets/img/${n}.webp`;
+const PW=['1239291','2381069','3772712','762020','2853592','774909','1065084','733872','415829','1587009','1181686'];
+const PM=['1516680','2379004','2182970','220453','3778603','3785077','1222271','91227','1300402','1043471','3785079','937481'];
+
+/* ---------- Data ---------- */
+const DEPTS=[
+ {c:'ENG',n:'English',s:'Humanities',est:1921,img:'library-stacks',hod:'Dr. Leela Thomas',f:28,st:640,labs:['Language Lab','Theatre Studio'],p:['B.A. English','M.A. English','Ph.D. English'],about:'One of the oldest English departments in South India, known for translation studies and the annual Shakespeare play.'},
+ {c:'TAM',n:'Tamil',s:'Humanities',est:1921,img:'reading-room',hod:'Dr. K. Senthamarai',f:22,st:410,labs:['Epigraphy Room','Manuscript Library'],p:['B.A. Tamil','M.A. Tamil','Ph.D. Tamil'],about:'Teaches Sangam to modern literature and holds a collection of 1,200 palm-leaf manuscripts.'},
+ {c:'HIS',n:'History',s:'Humanities',est:1932,img:'campus-tower',hod:'Dr. Arul Doss',f:12,st:260,labs:['Archives Lab'],p:['B.A. History','M.A. History'],about:'Focuses on South Indian and colonial history, with an oral history archive of Tambaram.'},
+ {c:'ECO',n:'Economics',s:'Humanities',est:1945,img:'placement-drive',hod:'Dr. Meena Krishnan',f:14,st:310,labs:['Econometrics Lab'],p:['B.A. Economics','M.A. Economics'],about:'Runs a rural household survey in Chengalpattu district every year.'},
+ {c:'PSY',n:'Psychology',s:'Humanities',est:2008,img:'group-study',hod:'Dr. Rachel Sam',f:10,st:280,labs:['Psychometry Lab','Counselling Centre'],p:['B.Sc. Psychology','M.Sc. Applied Psychology'],about:'Pairs coursework with a free campus counselling centre staffed by supervised PG students.'},
+ {c:'SWK',n:'Social Work',s:'Humanities',est:1985,img:'nss-camp',hod:'Dr. Victor Jayaraj',f:11,st:220,labs:['Field Action Office'],p:['BSW','MSW'],about:'Field placements with 60 partner NGOs and two field action projects in nearby villages.'},
+ {c:'VIS',n:'Visual Communication',s:'Humanities',est:2001,img:'auditorium',hod:'Mr. Ashwin Paul',f:12,st:300,labs:['Photo Studio','Edit Suite','Audio Booth'],p:['B.Sc. Visual Communication'],about:'Studio-based programme in design, photography and documentary film.'},
+ {c:'MAT',n:'Mathematics',s:'Sciences',est:1926,img:'chalkboard',hod:'Dr. R. Balasubramanian',f:20,st:430,labs:['Computing Lab'],p:['B.Sc. Mathematics','M.Sc. Mathematics','Ph.D. Mathematics'],about:'Research in graph theory and fuzzy algebra; hosts the annual Ramanujan Day quiz.'},
+ {c:'PHY',n:'Physics',s:'Sciences',est:1926,img:'physics',hod:'Dr. Susan George',f:18,st:360,labs:['Materials Lab','Optics Lab','Observatory'],p:['B.Sc. Physics','M.Sc. Physics','Ph.D. Physics'],about:'Thin-film and nanomaterials research, with a rooftop observatory open to schools.'},
+ {c:'CHE',n:'Chemistry',s:'Sciences',est:1926,img:'lab',hod:'Dr. P. Muthukumar',f:21,st:390,labs:['Instrumentation Centre','Green Chemistry Lab'],p:['B.Sc. Chemistry','M.Sc. Chemistry','Ph.D. Chemistry'],about:'DBT Star department with five granted patents in catalysis.'},
+ {c:'BOT',n:'Botany',s:'Sciences',est:1927,img:'courtyard',hod:'Dr. Jasmine Edward',f:16,st:300,labs:['Herbarium','Tissue Culture Lab'],p:['B.Sc. Botany','M.Sc. Botany','Ph.D. Botany'],about:'Cares for the 64-acre campus forest and a herbarium of 22,000 specimens.'},
+ {c:'ZOO',n:'Zoology',s:'Sciences',est:1928,img:'lawn-study',hod:'Dr. S. Ramprasad',f:15,st:290,labs:['Museum','Aquaculture Unit'],p:['B.Sc. Zoology','M.Sc. Zoology','Ph.D. Zoology'],about:'Biodiversity monitoring of the campus forest and Pallikaranai marsh.'},
+ {c:'CSC',n:'Computer Science',s:'Sciences',est:1992,img:'laptop',hod:'Dr. Deepa Nathan',f:26,st:720,labs:['AI & Data Lab','Networks Lab','Open Source Lab'],p:['B.Sc. Computer Science','M.Sc. Computer Science','Ph.D. Computer Science'],about:'Industry-linked electives in data science, cloud and cybersecurity.'},
+ {c:'BCA',n:'Computer Applications',s:'Sciences',est:1998,img:'desk',hod:'Dr. Ganesh Babu',f:18,st:540,labs:['Software Lab','Mobile Lab'],p:['BCA','MCA'],about:'Project-based learning with a final-semester industry internship.'},
+ {c:'COM',n:'Commerce',s:'Commerce & Management',est:1950,img:'mentoring',hod:'Dr. V. Jayanthi',f:34,st:1180,labs:['Tally & GST Lab','Stock Market Lab'],p:['B.Com (General)','B.Com (Computer Applications)','M.Com','Ph.D. Commerce'],about:'The largest department, with CA and CMA foundation coaching built in.'},
+ {c:'BBA',n:'Business Administration',s:'Commerce & Management',est:2003,img:'handshake',hod:'Dr. Felix Raj',f:14,st:420,labs:['Business Incubator'],p:['BBA','MBA'],about:'Home of the campus incubator, which has supported 19 student start-ups.'}
+];
+const PROGS=[];
+const seatsBy={UG:[60,70,80,100,120],PG:[30,35,40,48],Research:[8,10,12]};
+DEPTS.forEach((d,i)=>d.p.forEach((p,j)=>{
+  const lvl=p.startsWith('Ph.D')?'Research':/^(M\.|MSW|MCA|MBA)/.test(p)?'PG':'UG';
+  const sf=['PSY','VIS','CSC','BCA','BBA'].includes(d.c)||(lvl==='PG'&&['COM','SWK'].includes(d.c))||p.includes('Computer Applications)');
+  const arr=seatsBy[lvl];
+  PROGS.push({n:p,l:lvl,d:d.n,dc:d.c,code:(lvl==='UG'?'U':lvl==='PG'?'P':'R')+d.c+(j+1),dur:lvl==='UG'?'3 years · 6 semesters':lvl==='PG'?'2 years · 4 semesters':'3 – 5 years',seats:arr[(i+j)%arr.length],shift:lvl==='Research'?'Full / part time':sf?'Shift II · Self-financed':'Shift I · Aided'});
+}));
+[['Data Analytics with Python','CSC'],['Tamil Epigraphy','TAM'],['GST & Taxation Practice','COM'],['Counselling Skills','PSY'],['Documentary Filmmaking','VIS'],['Organic Farming','BOT']].forEach(([n,c],i)=>{const d=DEPTS.find(x=>x.c===c);PROGS.push({n:'Certificate in '+n,l:'Certificate',d:d.n,dc:c,code:'C'+c+(i+1),dur:'6 months · weekends',seats:[40,30,60,40,25,40][i],shift:'Value-added'})});
+
+let wi=0,mi=0;
+const FAC=[
+ ['Dr. Leela Thomas','Professor & Head','ENG','M.A., M.Phil., Ph.D.','Translation studies','f'],['Dr. Ajay Kumar Pillai','Associate Professor','ENG','M.A., Ph.D.','Indian writing in English','m'],['Ms. Hepzibah Rani','Assistant Professor','ENG','M.A., NET','Children’s literature','f'],
+ ['Dr. K. Senthamarai','Professor & Head','TAM','M.A., Ph.D.','Sangam poetics','f'],['Dr. M. Ilango','Associate Professor','TAM','M.A., M.Phil., Ph.D.','Tamil epigraphy','m'],
+ ['Dr. Arul Doss','Associate Professor & Head','HIS','M.A., Ph.D.','Colonial Madras','m'],['Dr. Meena Krishnan','Professor & Head','ECO','M.A., Ph.D.','Development economics','f'],['Dr. Rahul Varghese','Assistant Professor','ECO','M.A., Ph.D.','Econometrics','m'],
+ ['Dr. Rachel Sam','Associate Professor & Head','PSY','M.Sc., Ph.D.','Clinical psychology','f'],['Dr. Victor Jayaraj','Professor & Head','SWK','MSW, Ph.D.','Community development','m'],['Mr. Ashwin Paul','Assistant Professor & Head','VIS','M.Des.','Documentary film','m'],
+ ['Dr. R. Balasubramanian','Professor & Head','MAT','M.Sc., M.Phil., Ph.D.','Graph theory','m'],['Dr. Nirmala Devi','Associate Professor','MAT','M.Sc., Ph.D.','Fuzzy algebra','f'],['Dr. Susan George','Professor & Head','PHY','M.Sc., Ph.D.','Thin-film materials','f'],['Dr. Imran Basha','Assistant Professor','PHY','M.Sc., Ph.D.','Astrophysics','m'],
+ ['Dr. P. Muthukumar','Professor & Head','CHE','M.Sc., Ph.D.','Green catalysis','m'],['Dr. Anitha Sekar','Associate Professor','CHE','M.Sc., Ph.D.','Electrochemistry','f'],['Dr. Jasmine Edward','Professor & Head','BOT','M.Sc., Ph.D.','Plant taxonomy','f'],['Dr. Prakash Rao','Assistant Professor','BOT','M.Sc., Ph.D.','Ethnobotany','m'],
+ ['Dr. S. Ramprasad','Associate Professor & Head','ZOO','M.Sc., Ph.D.','Wetland ecology','m'],['Dr. Deepa Nathan','Professor & Head','CSC','MCA, Ph.D.','Machine learning','f'],['Dr. Vignesh Kannan','Assistant Professor','CSC','M.Tech., Ph.D.','Cybersecurity','m'],['Ms. Swetha Iyer','Assistant Professor','CSC','M.Sc., SET','Data visualisation','f'],
+ ['Dr. Ganesh Babu','Associate Professor & Head','BCA','MCA, Ph.D.','Cloud computing','m'],['Dr. V. Jayanthi','Professor & Head','COM','M.Com., Ph.D.','Corporate accounting','f'],['Dr. Stephen Raj','Associate Professor','COM','M.Com., ACA, Ph.D.','Taxation','m'],['Dr. Felix Raj','Associate Professor & Head','BBA','MBA, Ph.D.','Entrepreneurship','m']
+].map(([n,des,dc,q,sp,g])=>({n,des,dc,q,sp,dn:DEPTS.find(d=>d.c===dc).n,ph:'p-'+(g==='f'?PW[wi++%PW.length]:PM[mi++%PM.length])}));
+
+const LEADERS=[['Rt. Rev. R. Daniel','Chairperson, Board of Management','1300402'],['Dr. Priya Jebakumar','Principal & Secretary','1181686'],['Dr. S. Venkatesan','Vice-Principal (Shift I)','2182970'],['Dr. Mercy Arulraj','Vice-Principal (Shift II)','2381069']];
+const ACH=[
+ {c:'Academic',y:'2026',t:'46 University of Madras rank holders',d:'Including 9 gold medallists across English, Chemistry, Commerce and Computer Science.',img:'convocation'},
+ {c:'Academic',y:'2026',t:'38 students clear UGC-NET and CSIR-NET',d:'The highest in the college’s history, with 12 Junior Research Fellowships.',img:'library-cheer'},
+ {c:'Research',y:'2026',t:'Patent for a low-cost water defluoridation filter',d:'Granted to the Department of Chemistry.',img:'lab'},
+ {c:'Research',y:'2025',t:'₹1.2 crore DST-FIST grant',d:'For the Physics and Chemistry instrumentation centre.',img:'physics'},
+ {c:'Research',y:'2025',t:'New orchid species recorded',d:'Described by Botany faculty and M.Sc. students from the Kolli Hills.',img:'courtyard'},
+ {c:'Sports',y:'2026',t:'Inter-zonal tennis champions',d:'Third title in four years at the University of Madras tournament.',img:'tennis'},
+ {c:'Sports',y:'2025',t:'State aquatics meet: 4 medals',d:'Gold in 200 m freestyle and three relay medals.',img:'swimming'},
+ {c:'Sports',y:'2026',t:'Athletics team wins zonal meet',d:'Tamil Nadu inter-collegiate championship, Chennai zone.',img:'founders-day'},
+ {c:'Cultural',y:'2026',t:'Best NSS unit, Tamil Nadu',d:'For 14,000 volunteer hours in flood relief and literacy camps.',img:'nss-camp'},
+ {c:'Cultural',y:'2025',t:'Overall champions at three inter-college fests',d:'Including the national-level “Deepwoods” and “Kalaivizha”.',img:'auditorium'},
+ {c:'Academic',y:'2025',t:'Best Autonomous College award',d:'From the Tamil Nadu State Council for Higher Education.',img:'graduates'},
+ {c:'Cultural',y:'2026',t:'Short film selected at a national student festival',d:'By final-year Visual Communication students.',img:'student-bench'}
+];
+const GAL=[
+ ['Main Block and Clock Tower','Campus','campus-tower'],['Convocation 2026','Academic','convocation'],['Marutham cultural fest','Events','auditorium'],['Inter-zonal tennis finals','Sports','tennis'],
+ ['Garden courtyard','Campus','courtyard'],['Chemistry research lab','Academic','lab'],['Founder’s Day celebrations','Events','founders-day'],['Aquatics meet','Sports','swimming'],
+ ['Centenary Library','Campus','library'],['NSS literacy camp','Events','nss-camp'],['Lecture hall, Science Block','Academic','lecture-hall'],['Study on the main lawn','Campus','lawn-study'],
+ ['Graduation day','Events','caps'],['Mathematics seminar','Academic','chalkboard'],['Reading room','Campus','reading-room'],['Placement drive 2026','Events','placement-drive']
+];
+const ALUM=[['Dr. Kavya Subramaniam','B.Sc. Chemistry 1996','Scientist, ISRO Propulsion Complex','762020'],['Justice R. Elangovan','B.A. History 1979','Former Judge, High Court of Madras','3778603'],
+ ['Ms. Nandini Joseph','B.Sc. Visual Communication 2006','National Award-winning documentary director','3772712'],['Mr. Arjun Mehta','B.Com 1999','Founder of a Chennai fintech company','2379004'],
+ ['Dr. Thomas Varghese','M.Sc. Botany 1988','Conservation biologist, Western Ghats','220453'],['Ms. Priyanka Devi','B.A. Economics 2011','Indian Administrative Service','1065084'],
+ ['Mr. S. Karthikeyan','B.Sc. Physics 1994','National aquatics coach','1222271'],['Ms. Revathi Shankar','M.A. English 2003','Novelist and translator','774909']];
+const EVENTS=[['22','Oct','Marudham Lecture 2026: Water and the Tamil city','Anderson Hall · 4:00 pm · Open to the public','auditorium'],['06','Nov','National Seminar on Computational Biology','Depts. of Zoology & Computer Science · 2 days','lab'],['14','Nov','Inter-collegiate cultural fest “Marutham ’26”','Open-air theatre · 38 participating colleges','founders-day'],['05','Dec','Annual Sports Day & Founder’s Day','Main ground · Chief Guest to be announced','tennis']];
+const FACIL=[['Centenary Library','1,24,500 volumes, 420 seats and 9,000+ e-journals.','library','#library'],['Research Labs','DST-FIST instrumentation centre and 22 teaching labs.','lab','#departments'],['Sports Complex','Pool, tennis and basketball courts, and a 400 m track.','swimming','#achievements'],['Halls of Residence','Three halls with mess, reading rooms and wardens on campus.','courtyard','#helpdesk'],['Auditorium','Anderson Hall seats 1,200 for lectures, fests and convocation.','auditorium','#gallery'],['Smart Classrooms','140 ICT-enabled classrooms and a campus-wide Wi-Fi network.','lecture-hall','#academics']];
+const HD=[['Admissions','i-cap','Applications, eligibility, counselling','Ext. 4122 · 9–5'],['Examinations','i-file','Timetables, hall tickets, revaluation','Ext. 4140 · 10–4'],['Scholarships','i-rupee','Government and college scholarships','Ext. 4128 · 10–4'],['Certificates','i-shield','Bonafide, TC, conduct, migration','Ext. 4110 · 9–5'],['Hostel','i-home','Allotment, mess, leave','Ext. 4170 · 24 hrs'],['Transport','i-bus','College buses on 14 routes','Ext. 4180 · 7–6'],['IT & ERP','i-laptop','Student portal, Wi-Fi, email','Ext. 4190 · 9–5'],['Grievance & Wellbeing','i-heart','Counselling, ICC, grievance cell','Ext. 4199 · confidential']];
+const BOOKS=[['Tamil Literature: A Historical Survey','M. Varadarajan','894.811 VAR','in'],['Python Crash Course, 3rd ed.','Eric Matthes','005.133 MAT','out'],['Fundamentals of Ecology','Eugene P. Odum','577 ODU','in'],['Ponniyin Selvan (5 vols.)','Kalki Krishnamurthy','894.8113 KAL','in'],['Principles of Economics','N. Gregory Mankiw','330 MAN','out'],['Organic Chemistry','Clayden, Greeves & Warren','547 CLA','in'],['Introduction to Algorithms','Cormen et al.','005.1 COR','in'],['Flora of the Presidency of Madras','J. S. Gamble','581.954 GAM','ref'],['Cost Accounting','S. P. Jain & K. L. Narang','657.42 JAI','in'],['Ecology and Equity','Madhav Gadgil & Ramachandra Guha','333.7 GAD','out']];
+const RECRUIT=['TCS','Infosys','Cognizant','Accenture','Deloitte','EY','HCLTech','Zoho','KPMG','Wipro','Standard Chartered','Freshworks'];
+const ADMIT=['Admissions open for 2027–28: UG, PG and Ph.D. programmes','Online applications open on 2 May 2027','42 programmes in Arts, Science and Commerce','Merit-cum-means scholarships for 400 students','Hostel seats for men and women','Call +91 44 2239 4122 for admission help'];
+const NEWS=['Odd semester examinations begin 2 November 2026','Marudham Lecture 2026 on 22 October, Anderson Hall','46 students secure University ranks in 2026','College wins Best NSS Unit award, Tamil Nadu','Post-matric scholarship renewal closes 31 October'];
+
+/* ---------- Helpers ---------- */
+const deptCard=(d,btn)=>`<${btn?'button type="button"':'a href="#departments"'} class="pcard" data-dept="${d.c}"><div class="img"><img src="${IMG(d.img)}" alt=""><span class="chip">${esc(d.s)}</span></div><div class="body"><span class="code">${d.c} · EST. ${d.est}</span><h3>${esc(d.n)}</h3><span class="meta"><span class="chip">${d.p.length} programme${d.p.length>1?'s':''}</span><span class="chip gold">${d.f} faculty</span></span></div></${btn?'button':'a'}>`;
+const gTile=(g,i)=>`<button type="button" class="gtile" data-g="${i}" aria-label="Open photo: ${esc(g[0])}"><img src="${IMG(g[2])}" alt="${esc(g[0])}"><span class="cap">${esc(g[0])}<span>${g[1]} · 2026</span></span></button>`;
+const runHTML=arr=>[...arr,...arr].map(t=>`<span>${esc(t)}</span>`).join('');
+
+$('#admitRun').innerHTML=runHTML(ADMIT);
+$('#newsRun').innerHTML=runHTML(NEWS);
+
+/* ---------- Hero slider ---------- */
+(function(){
+  const track=$('#track'); const slides=[...track.children]; const N=slides.length; const DUR=5000;
+  track.appendChild(slides[0].cloneNode(true)); track.lastElementChild.setAttribute('aria-hidden','true');
+  const all=[...track.children]; let i=0, timer=null, paused=false;
+  $('#slTotal').textContent=String(N).padStart(2,'0');
+  $('#slDots').innerHTML=slides.map((_,k)=>`<button type="button" aria-label="Go to slide ${k+1}"></button>`).join('');
+  const dots=[...$('#slDots').children]; const bar=$('#slBar'); bar.style.setProperty('--dur',DUR+'ms');
+  function paint(){ const real=i%N; $('#slNow').textContent=String(real+1).padStart(2,'0'); dots.forEach((d,k)=>d.classList.toggle('on',k===real)); all.forEach((s,k)=>s.classList.toggle('on',k===i||(i===N&&k===0))); bar.classList.remove('go'); void bar.offsetWidth; if(!paused) bar.classList.add('go'); }
+  function go(n,instant){ i=n; track.classList.toggle('jump',!!instant); track.style.transform=`translateX(-${i*100}%)`; paint(); restart(); }
+  track.addEventListener('transitionend',e=>{ if(e.target!==track) return; if(i===N){ go(0,true); } });
+  function next(){ if(i>=N){go(0,true);requestAnimationFrame(()=>requestAnimationFrame(()=>go(1)));} else go(i+1); }
+  function prev(){ if(i===0){ go(N,true); requestAnimationFrame(()=>requestAnimationFrame(()=>go(N-1))); } else go(i-1); }
+  function restart(){ clearTimeout(timer); if(!paused) timer=setTimeout(next,DUR); }
+  $('#slNext').addEventListener('click',next); $('#slPrev').addEventListener('click',prev);
+  dots.forEach((d,k)=>d.addEventListener('click',()=>go(k)));
+  const hero=$('#hero');
+  hero.addEventListener('mouseenter',()=>{paused=true;clearTimeout(timer);bar.classList.remove('go')});
+  hero.addEventListener('mouseleave',()=>{paused=false;paint();restart()});
+  hero.addEventListener('keydown',e=>{if(e.key==='ArrowRight')next();if(e.key==='ArrowLeft')prev()});
+  let sx=null; hero.addEventListener('touchstart',e=>sx=e.touches[0].clientX,{passive:true});
+  hero.addEventListener('touchend',e=>{if(sx==null)return;const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>40)(dx<0?next:prev)();sx=null});
+  window.__slider={next,prev,go,get index(){return i%N}};
+  paint(); restart();
+})();
+
+/* ---------- Home ---------- */
+$('#homeDepts').innerHTML=DEPTS.filter(d=>['ENG','TAM','CHE','BOT','CSC','COM','PSY','VIS'].includes(d.c)).map(d=>deptCard(d)).join('');
+$('#homeEvents').innerHTML=EVENTS.map(e=>`<article class="event"><div class="thumb"><img src="${IMG(e[4])}" alt=""><span class="date"><b>${e[0]}</b><span>${e[1]}</span></span></div><div><h4>${esc(e[2])}</h4><p>${esc(e[3])}</p></div></article>`).join('');
+$('#facilities').innerHTML=FACIL.map(f=>`<a class="pcard" href="${f[3]}"><div class="img"><img src="${IMG(f[2])}" alt=""></div><div class="body"><h3>${esc(f[0])}</h3><p class="muted" style="font-size:.92rem">${esc(f[1])}</p></div></a>`).join('');
+const logoRun=RECRUIT.map(r=>`<span class="wordmark">${r}</span>`).join('');
+$('#homeRecruiters').innerHTML=logoRun+logoRun; $('#recruiters').innerHTML=logoRun+logoRun;
+const HOMEG=[0,2,3,1,5];
+$('#homeGallery').innerHTML=HOMEG.map(k=>gTile(GAL[k],k)).join('');
+
+/* ---------- About ---------- */
+$('#leaders').innerHTML=LEADERS.map(l=>`<article class="card person"><img src="${IMG('p-'+l[2])}" alt="Portrait of ${esc(l[0])}"><h4>${esc(l[0])}</h4><p class="d">${esc(l[1])}</p></article>`).join('');
+
+/* ---------- Programmes ---------- */
+let progL='all';
+function renderProgs(){
+  const q=$('#progQ').value.trim().toLowerCase();
+  const list=PROGS.filter(p=>(progL==='all'||p.l===progL)&&(!q||(p.n+' '+p.d).toLowerCase().includes(q)));
+  $('#progCount').textContent=`Showing ${list.length} of ${PROGS.length} programmes`;
+  $('#progGrid').innerHTML=list.map(p=>`<article class="card prog l-${p.l}"><div class="top"><span class="chip${p.l==='UG'?'':' gold'}">${p.l}</span><span class="mono muted" style="font-size:.75rem">${p.code}</span></div><h3>${esc(p.n)}</h3><dl><dt>Department</dt><dd>${esc(p.d)}</dd><dt>Duration</dt><dd>${p.dur}</dd><dt>Stream</dt><dd>${p.shift}</dd></dl><div class="foot"><span class="mono" style="font-size:.85rem">${p.seats} seats</span><a class="link" href="#syllabus" style="font-size:.88rem">Syllabus <svg class="ico" style="width:16px;height:16px"><use href="#i-arrow"/></svg></a></div></article>`).join('')||`<p class="muted">No programme matches “${esc(q)}”. Try a subject such as Physics or Commerce.</p>`;
+}
+const segBind=(id,fn)=>$(id).addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;$$(id+' button').forEach(x=>x.classList.toggle('on',x===b));fn(b)});
+segBind('#progSeg',b=>{progL=b.dataset.l;renderProgs()});
+$('#progQ').addEventListener('input',renderProgs);renderProgs();
+
+/* ---------- Departments ---------- */
+let deptS='all',deptSel='CHE',pendingDept=null;
+function renderDepts(){ $('#deptGrid').innerHTML=DEPTS.filter(d=>deptS==='all'||d.s===deptS).map(d=>deptCard(d,true).replace('class="pcard"',`class="pcard${d.c===deptSel?' sel':''}"`)).join(''); }
+function showDept(code){
+  const d=DEPTS.find(x=>x.c===code); deptSel=code; renderDepts();
+  const fac=FAC.filter(f=>f.dc===code);
+  $('#deptDetail').innerHTML=`<div class="dept-detail" id="deptBox"><img src="${IMG(d.img)}" alt="Department of ${esc(d.n)}"><div class="stack" style="gap:12px"><span class="eyebrow">${esc(d.s)} · Est. ${d.est}</span><h2 id="deptName">Department of ${esc(d.n)}</h2><p class="muted">${esc(d.about)}</p><div class="pill-row">${d.p.map(p=>`<span class="chip">${esc(p)}</span>`).join('')}</div><div class="pill-row">${d.labs.map(l=>`<span class="chip gold">${esc(l)}</span>`).join('')}</div></div><div class="stack" style="gap:14px"><dl class="kv"><dt>Head</dt><dd>${esc(d.hod)}</dd><dt>Faculty</dt><dd>${d.f}</dd><dt>Students</dt><dd class="mono">${d.st.toLocaleString('en-IN')}</dd><dt>Programmes</dt><dd>${d.p.length}</dd></dl>${fac.length?`<div style="display:flex;gap:6px">${fac.map(f=>`<img src="${IMG(f.ph)}" alt="${esc(f.n)}" title="${esc(f.n)}" style="width:40px;height:40px;border-radius:999px;object-fit:cover;border:2px solid var(--surface)">`).join('')}</div>`:''}<div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn btn-brand btn-sm" href="#faculty" data-fac="${d.c}">View faculty</a><a class="btn btn-ghost btn-sm" href="#syllabus">Syllabus</a></div></div></div>`;
+}
+segBind('#deptSeg',b=>{deptS=b.dataset.s;renderDepts()});
+$('#deptGrid').addEventListener('click',e=>{const b=e.target.closest('[data-dept]');if(!b)return;showDept(b.dataset.dept);$('#deptBox').scrollIntoView({behavior:'smooth',block:'start'})});
+$('#homeDepts').addEventListener('click',e=>{const b=e.target.closest('[data-dept]');if(b)pendingDept=b.dataset.dept});
+showDept('CHE');
+
+/* ---------- Faculty ---------- */
+$('#facDept').innerHTML+=DEPTS.map(d=>`<option value="${d.c}">${esc(d.n)}</option>`).join('');
+function renderFac(){
+  const q=$('#facQ').value.trim().toLowerCase(),dc=$('#facDept').value;
+  const list=FAC.filter(f=>(!dc||f.dc===dc)&&(!q||(f.n+' '+f.sp+' '+f.dn).toLowerCase().includes(q)));
+  $('#facCount').textContent=`${list.length} faculty member${list.length===1?'':'s'} shown`;
+  $('#facGrid').innerHTML=list.map(f=>`<article class="card fac"><img src="${IMG(f.ph)}" alt="Portrait of ${esc(f.n)}"><div style="min-width:0"><h4>${esc(f.n)}</h4><p class="d">${esc(f.des)}, ${esc(f.dn)}</p><p class="d mono" style="font-size:.76rem">${esc(f.q)}</p><div class="tags"><span class="chip">${esc(f.sp)}</span></div></div></article>`).join('')||'<p class="muted">No one matches. Clear the search or choose another department.</p>';
+}
+$('#facQ').addEventListener('input',renderFac);$('#facDept').addEventListener('change',renderFac);renderFac();
+document.addEventListener('click',e=>{const a=e.target.closest('[data-fac]');if(a){$('#facDept').value=a.dataset.fac;$('#facQ').value='';renderFac()}});
+
+/* ---------- Syllabus ---------- */
+let sylL='all'; const SYL=PROGS.filter(p=>p.l==='UG'||p.l==='PG');
+function renderSyl(){
+  const q=$('#sylQ').value.trim().toLowerCase();
+  $('#sylBody').innerHTML=SYL.filter(p=>(sylL==='all'||p.l===sylL)&&(!q||p.n.toLowerCase().includes(q))).map((p,i)=>`<tr><td class="mono">${p.code}</td><td><b>${esc(p.n)}</b><div class="muted" style="font-size:.8rem">${esc(p.d)}</div></td><td><span class="chip${i%3?'':' gold'}">${i%3?'Reg. 2024 · LOCF':'Reg. 2023'}</span></td><td class="mono">${i%3?'14 Mar 2024':'22 Apr 2023'}</td><td class="num">${p.l==='UG'?6:4}</td><td><button class="btn btn-ghost btn-sm js-syl" type="button" data-n="${esc(p.n)}"><svg class="ico" style="width:16px;height:16px"><use href="#i-file"/></svg>View PDF</button></td></tr>`).join('')||'<tr><td colspan="6" class="muted">No programme matches that search.</td></tr>';
+}
+segBind('#sylSeg',b=>{sylL=b.dataset.l;renderSyl()});
+$('#sylQ').addEventListener('input',renderSyl);renderSyl();
+$('#sylBody').addEventListener('click',e=>{const b=e.target.closest('.js-syl');if(b)toast(`The ${b.dataset.n} syllabus PDF opens here on the live site.`)});
+
+/* ---------- Admission ---------- */
+$('#ad-prog').innerHTML=PROGS.filter(p=>p.l!=='Certificate').map(p=>`<option>${esc(p.n)}</option>`).join('');
+(function(){const open=new Date(2027,4,2,9,0,0);function tick(){let ms=Math.max(0,open-new Date());const d=Math.floor(ms/864e5),h=Math.floor(ms/36e5)%24,m=Math.floor(ms/6e4)%60;
+ $('#countdown').innerHTML=ms?[[d,'days'],[h,'hours'],[m,'minutes']].map(([v,l])=>`<div><b class="mono">${String(v).padStart(2,'0')}</b><span>${l}</span></div>`).join('')+`<div style="text-align:left;display:flex;align-items:center;background:none;border:0;padding:0 6px">until applications open<br>on 2 May 2027</div>`:'<div><b>Open</b><span>Apply now</span></div>';}
+ tick();setInterval(tick,30000);})();
+
+/* ---------- Library ---------- */
+function renderOpac(){
+  const q=$('#opacQ').value.trim().toLowerCase();
+  const list=BOOKS.filter(b=>!q||b.join(' ').toLowerCase().includes(q));
+  $('#opacRes').innerHTML=list.slice(0,6).map(b=>`<div><div style="min-width:0"><b>${esc(b[0])}</b><div class="muted" style="font-size:.85rem">${esc(b[1])} · <span class="mono">${b[2]}</span></div></div><span class="${b[3]==='out'?'status-out':'status-in'}">${b[3]==='out'?'Issued':b[3]==='ref'?'Reference':'Available'}</span></div>`).join('')||'<p class="muted" style="padding:12px 0">No records in the sample catalogue. Try “Tamil” or “ecology”.</p>';
+}
+$('#opacQ').addEventListener('input',renderOpac);renderOpac();
+
+/* ---------- Achievements ---------- */
+let achC='all';
+function renderAch(){ $('#achGrid').innerHTML=ACH.filter(a=>achC==='all'||a.c===achC).map(a=>`<article class="pcard" style="cursor:default"><div class="img"><img src="${IMG(a.img)}" alt=""><span class="chip">${a.c==='Cultural'?'Cultural & Service':a.c}</span></div><div class="body"><span class="mono muted" style="font-size:.78rem">${a.y}</span><h3>${esc(a.t)}</h3><p class="muted" style="font-size:.92rem">${esc(a.d)}</p></div></article>`).join(''); }
+segBind('#achSeg',b=>{achC=b.dataset.c;renderAch()});renderAch();
+
+/* ---------- Gallery + lightbox ---------- */
+let galC='all', lbList=[], lbPos=0, lastFocus=null;
+function renderGal(){ $('#galGrid').innerHTML=GAL.map((g,i)=>[g,i]).filter(([g])=>galC==='all'||g[1]===galC).map(([g,i])=>gTile(g,i)).join(''); }
+segBind('#galSeg',b=>{galC=b.dataset.c;renderGal()});renderGal();
+function lbShow(){ const g=GAL[lbList[lbPos]]; $('#lbImg').src=IMG(g[2]); $('#lbImg').alt=g[0]; $('#lbCap').textContent=g[0]; $('#lbCount').textContent=`${lbPos+1} / ${lbList.length}`; }
+function lbOpen(idx,scope){ lbList=scope; lbPos=Math.max(0,scope.indexOf(idx)); lbShow(); lastFocus=document.activeElement; $('#lightbox').hidden=false; document.body.style.overflow='hidden'; $('#lbClose').focus(); }
+function lbClose(){ $('#lightbox').hidden=true; document.body.style.overflow=''; lastFocus&&lastFocus.focus&&lastFocus.focus(); }
+const lbStep=d=>{ lbPos=(lbPos+d+lbList.length)%lbList.length; lbShow(); };
+$('#galGrid').addEventListener('click',e=>{const b=e.target.closest('[data-g]');if(!b)return;const scope=[...$('#galGrid').querySelectorAll('[data-g]')].map(x=>+x.dataset.g);lbOpen(+b.dataset.g,scope)});
+$('#homeGallery').addEventListener('click',e=>{const b=e.target.closest('[data-g]');if(b)lbOpen(+b.dataset.g,HOMEG)});
+$('#lbClose').addEventListener('click',lbClose);
+$('#lbPrev').addEventListener('click',()=>lbStep(-1)); $('#lbNext').addEventListener('click',()=>lbStep(1));
+$('#lightbox').addEventListener('click',e=>{if(e.target.id==='lightbox')lbClose()});
+document.addEventListener('keydown',e=>{
+  if(!$('#lightbox').hidden){ if(e.key==='Escape')lbClose(); if(e.key==='ArrowRight')lbStep(1); if(e.key==='ArrowLeft')lbStep(-1); return; }
+  if(e.key==='Escape'&&!$('#drawer').hidden)closeDrawer();
+});
+
+/* ---------- Alumni ---------- */
+$('#alumGrid').innerHTML=ALUM.map(a=>`<article class="card person"><img src="${IMG('p-'+a[3])}" alt="Portrait of ${esc(a[0])}"><h4>${esc(a[0])}</h4><p class="mono muted" style="font-size:.74rem">${esc(a[1])}</p><p style="font-size:.9rem">${esc(a[2])}</p></article>`).join('');
+
+/* ---------- Help desk ---------- */
+$('#hdGrid').innerHTML=HD.map(h=>`<article class="card hd-cat"><span class="qi"><svg class="ico"><use href="#${h[1]}"/></svg></span><h4>${h[0]}</h4><p class="muted" style="font-size:.88rem">${h[2]}</p><span class="contact">${h[3]}</span></article>`).join('');
+$('#hd-cat').innerHTML=HD.map(h=>`<option>${h[0]}</option>`).join('');
+$('#hdForm').addEventListener('submit',e=>{e.preventDefault();const ok=e.target.querySelector('.form-ok');const n=String(Math.floor(1000+Math.random()*9000));ok.innerHTML=`<svg class="ico"><use href="#i-shield"/></svg><span>Ticket <b class="mono" id="ticketId">MCAS-HD-2026-${n}</b> created for “${esc($('#hd-cat').value)}”. This is a prototype, so nothing was sent.</span>`;ok.hidden=false;e.target.reset()});
+$$('.js-form').forEach(f=>f.addEventListener('submit',e=>{e.preventDefault();const ok=f.querySelector('.form-ok');ok.innerHTML=`<svg class="ico"><use href="#i-shield"/></svg><span>${esc(f.dataset.ok)}</span>`;ok.hidden=false;f.reset()}));
+
+/* ---------- Copy email ---------- */
+$('#copyMail').addEventListener('click',()=>{const t=$('#mailTxt').textContent;try{navigator.clipboard.writeText(t).then(()=>toast('Email address copied'),selectTxt)}catch(_){selectTxt()}});
+function selectTxt(){const r=document.createRange();r.selectNodeContents($('#mailTxt'));const s=getSelection();s.removeAllRanges();s.addRange(r);toast('Address selected. Press Ctrl+C to copy.')}
+let tt;function toast(m){const t=$('#toast');t.textContent=m;t.hidden=false;clearTimeout(tt);tt=setTimeout(()=>t.hidden=true,3000)}
+
+/* ---------- Theme ---------- */
+const root=document.documentElement;
+const curTheme=()=>root.dataset.theme||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+const syncThemeLbl=()=>$('#themeLbl').textContent=curTheme()==='dark'?'Light':'Dark';
+try{const t=localStorage.getItem('mc-theme');if(t)root.dataset.theme=t}catch(_){}
+syncThemeLbl();
+$('#themeBtn').addEventListener('click',()=>{root.dataset.theme=curTheme()==='dark'?'light':'dark';syncThemeLbl();try{localStorage.setItem('mc-theme',root.dataset.theme)}catch(_){}});
+
+/* ---------- Drawer ---------- */
+function openDrawer(){$('#drawer').hidden=false;$('#burger').setAttribute('aria-expanded','true');$('#drawerClose').focus()}
+function closeDrawer(){$('#drawer').hidden=true;$('#burger').setAttribute('aria-expanded','false')}
+$('#burger').addEventListener('click',openDrawer);
+$('#drawerClose').addEventListener('click',closeDrawer);
+$('#drawer').addEventListener('click',e=>{if(e.target.id==='drawer'||e.target.closest('a'))closeDrawer()});
+
+/* ---------- Back to top ---------- */
+addEventListener('scroll',()=>{$('#toTop').hidden=scrollY<600},{passive:true});
+$('#toTop').addEventListener('click',()=>scrollTo({top:0,behavior:'smooth'}));
+
+/* ---------- Router ---------- */
+const PAGES=$$('.page').map(p=>p.dataset.page);
+const TITLES={home:'Home',about:'About Us',academics:'Academics',programmes:'Programmes',departments:'Departments',faculty:'Faculty',syllabus:'Syllabus',admission:'Admission',library:'Library',placement:'Placement',achievements:'Achievements',gallery:'Gallery',alumni:'Alumni',helpdesk:'Help Desk',contact:'Contact'};
+const GROUP={academics:['academics','programmes','departments','faculty','syllabus'],campus:['gallery','alumni']};
+let current=null, jumpTo=null;
+document.addEventListener('click',e=>{const a=e.target.closest('[data-jump]');if(!a)return;const id=a.dataset.jump;const page=a.getAttribute('href').slice(1);if(current===page){e.preventDefault();document.getElementById(id)?.scrollIntoView({behavior:'smooth',block:'start'})}else jumpTo=id});
+function route(){
+  let h=(location.hash||'#home').slice(1);
+  if(!PAGES.includes(h))h='home';
+  if(h!==current){$$('.page').forEach(p=>p.hidden=p.dataset.page!==h);current=h;window.scrollTo({top:0,behavior:'auto'})}
+  $$('[data-nav]').forEach(a=>a.classList.toggle('on',a.dataset.nav===h));
+  $$('.menu > li[data-group]').forEach(li=>li.firstElementChild.classList.toggle('on',(GROUP[li.dataset.group]||[]).includes(h)));
+  $('#mobTitle').textContent=TITLES[h];
+  if(h==='departments'&&pendingDept){showDept(pendingDept);pendingDept=null}
+  if(jumpTo){const id=jumpTo;jumpTo=null;requestAnimationFrame(()=>document.getElementById(id)?.scrollIntoView({block:'start'}))}
+  if(document.activeElement&&document.activeElement.closest&&document.activeElement.closest('.submenu'))document.activeElement.blur();
+}
+addEventListener('hashchange',route);route();
+})();
+</script>
