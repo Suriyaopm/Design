@@ -272,6 +272,8 @@ test.describe('Hero slider', () => {
     const want = page.viewportSize().width > 640 ? 3 : 1; // full 3:1 photo on desktop, square on phones
     expect(Math.abs(ratio - want)).toBeLessThan(0.05);
     await expect(page.locator('.hero .count')).toBeHidden(); // no 01 / 04 counter on screen
+    const hb = await page.locator('#hero').evaluate(e => { const r = e.getBoundingClientRect(); return [Math.round(r.left), Math.round(r.width)]; });
+    expect(hb).toEqual([0, page.viewportSize().width]); // slider runs edge to edge, no frame
     await expect(page.locator('#slNext')).toBeVisible();
   });
 });
@@ -303,6 +305,12 @@ test.describe('Principal and admission photos', () => {
     const pr = page.locator('img.portrait-img');
     await expect(pr).toHaveAttribute('src', 'assets/img/principal-placeholder.svg');
     expect(await pr.evaluate(i => i.decode().then(() => i.naturalWidth > 0))).toBe(true);
+    const box = await pr.evaluate(e => { const r = e.getBoundingClientRect(); return r.height / r.width; });
+    expect(Math.abs(box - (page.viewportSize().width > 640 ? 1.25 : 1))).toBeLessThan(0.05); // 4:5 on desktop, round on phones; never stretched
+    const wel = page.locator('.collage img').first();
+    await expect(wel).toHaveAttribute('src', 'assets/img/welcome-classroom.webp');
+    const wr = await wel.evaluate(e => { const r = e.getBoundingClientRect(); return r.width / r.height; });
+    expect(Math.abs(wr - 4 / 3)).toBeLessThan(0.05);
     const ad = page.locator('#home-admit .as-photo img');
     await expect(ad).toHaveAttribute('src', 'assets/img/admit-campus.webp');
     expect(await ad.evaluate(i => i.decode().then(() => i.naturalWidth))).toBe(1800);

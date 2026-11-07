@@ -102,7 +102,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 @media (max-width:760px){.palette{padding-left:0;border-left:0}}
 
 /* ---------- Header: crest + name left, menu right ---------- */
-.site-header{background:var(--surface);position:sticky;top:env(safe-area-inset-top,0px);z-index:50;border-bottom:3px solid var(--band);box-shadow:0 8px 20px -16px rgb(0 0 0 / .45)}
+.site-header{background:var(--surface);position:sticky;top:env(safe-area-inset-top,0px);z-index:50;border-bottom:0;box-shadow:none}
 .site-header .wrap{display:flex;align-items:center;gap:20px;height:var(--nav-h)}
 .brandmark{display:flex;align-items:center;gap:14px;text-decoration:none;color:var(--ink);margin-right:auto;min-width:0}
 .brandmark svg{width:58px;height:66px;flex:none}
@@ -762,7 +762,7 @@ ul.courses.plain{list-style:none;padding:0;margin:0 0 12px;display:grid;grid-tem
   .hero{border-radius:6px}
   .hero-ctrl{position:static;display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--band-deep)}
   .slide .shade{display:none}
-  .collage img:first-child{aspect-ratio:1/1;object-position:41% 50%}
+  .collage img:first-child{aspect-ratio:4/3;height:auto;object-position:50% 50%}
   .collage .est{position:static;display:inline-block;margin-top:10px}
 }
 
@@ -793,6 +793,78 @@ ul.courses.plain{list-style:none;padding:0;margin:0 0 12px;display:grid;grid-tem
 
 .portrait-img{width:100%;max-width:320px;aspect-ratio:4/5;object-fit:cover;border-radius:14px;box-shadow:var(--shadow);background:var(--soft)}
 @media (max-width:640px){.portrait-img{width:120px;max-width:120px;aspect-ratio:1;border-radius:50%;object-position:50% 25%}}
+
+/* ================= Small phones (fine-tuned at 320-414 px) ================= */
+@media (max-width:640px){
+  /* top bar: one line */
+  .topbar{font-size:.76rem}
+  .topbar .wrap{flex-wrap:nowrap;min-height:32px;gap:8px}
+  .topbar .row{flex-wrap:nowrap;gap:8px;min-width:0}
+  .topbar .row:first-child{overflow:hidden}
+  .topbar .ti{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .palette{gap:8px;padding-left:0;border-left:0;flex:none}
+  .palette .lbl{display:none}
+  .sw{width:20px;height:20px}
+  /* slider: arrows sit on the photo, no empty bar */
+  .hero{position:relative}
+  .hero-ctrl{position:absolute;left:auto;right:8px;bottom:8px;top:auto;background:none;padding:0}
+  .arrows button{width:32px;height:32px;background:rgb(0 0 0 / .35);border-color:rgb(255 255 255 / .8)}
+  .hero-band{padding-block:10px}
+  /* welcome: badge back on the photo, tighter spacing */
+  .collage{position:relative}
+  .collage .est{position:absolute;left:10px;bottom:10px;margin:0;padding:6px 10px;display:block}
+  .collage .est b{font-size:1.2rem}
+  .collage .est{font-size:.72rem;line-height:1.15}
+  .welcome{gap:20px}
+  #home-stats{min-height:0}
+}
+@media (max-width:420px){
+  :root{--nav-h:62px}
+  .site-header .wrap{gap:8px}
+  .brandmark{gap:8px}
+  .brandmark img.logo{width:40px;height:40px}
+  .brandmark .nm{font-size:1.1rem}
+  .brandmark .sub{font-size:.62rem;line-height:1.2}
+  .burger{height:36px;padding:0 10px;font-size:0;gap:0}
+  .burger .ico{width:20px;height:20px}
+  .mob-title{display:none}
+  h1{font-size:1.6rem}
+  h2,.ev-head h2{font-size:1.35rem}
+  .shead{margin-bottom:24px}
+  .newsbar .tag{font-size:.78rem}
+  .newsbar .marquee-run span{font-size:.8rem}
+}
+@media (max-width:340px){
+  .topbar .ti{max-width:190px}
+  .brandmark .sub br{display:none}
+}
+
+@media (max-width:420px){
+  .kv{grid-template-columns:minmax(0,1fr);gap:2px 0}
+  .kv dt{margin-top:10px;font-size:.78rem;text-transform:uppercase;letter-spacing:.06em}
+  .kv dt:first-child{margin-top:0}
+  .kv dd{overflow-wrap:anywhere}
+}
+
+/* principal photo: keep its shape (the width/height attributes must not win) */
+.portrait-img{height:auto}
+@media (max-width:640px){.portrait-img{width:140px!important;height:140px!important;max-width:140px;aspect-ratio:1/1;border-radius:50%;object-fit:cover;object-position:50% 30%;justify-self:start}}
+
+.collage img:first-child{height:auto;aspect-ratio:4/3;object-fit:cover}
+
+/* full-width slider: no coloured frame around the photos */
+.hero-band,.hero-band:where(*){padding:0!important}
+.hero-band > .wrap{max-width:none;padding:0!important;margin:0}
+.hero,.hero:where(*){border-radius:0!important;box-shadow:none!important}
+.newsbar{border-top:0}
+
+/* welcome photo: full column width, smaller crest card */
+@media (min-width:641px){
+  .collage{padding:0 0 36px 0}
+  .collage img.emb{width:30%;right:-16px;bottom:0;padding:8px;border-width:5px}
+  .collage .est{bottom:60px}
+}
+.site-header.scrolled{box-shadow:0 6px 18px -14px rgb(0 0 0 / .5)}
 </style>
 <script>var smp='maroon';try{smp=localStorage.getItem('sm-palette')||'maroon'}catch(e){}if(smp!=='teal')document.documentElement.dataset.palette='maroon';</script>
 
@@ -955,7 +1027,7 @@ ul.courses.plain{list-style:none;padding:0;margin:0 0 12px;display:grid;grid-tem
   <section class="section">
     <div class="wrap welcome">
       <div class="collage">
-        <img src="assets/img/college-front-md.webp" alt="St. Mary’s College of Education building">
+        <img src="assets/img/welcome-classroom.webp" alt="Student teachers in a classroom at St. Mary’s" width="1600" height="1063">
         <img class="emb" src="assets/img/logo.webp" alt="College emblem with the motto Love and Serve">
         <div class="est"><b>2008</b>serving<br>since</div>
       </div>
@@ -1656,7 +1728,7 @@ $('#drawerClose').addEventListener('click',closeDrawer);
 $('#drawer').addEventListener('click',e=>{if(e.target.id==='drawer'||e.target.closest('a'))closeDrawer()});
 
 /* ---------- Back to top ---------- */
-addEventListener('scroll',()=>{$('#toTop').hidden=scrollY<600},{passive:true});
+addEventListener('scroll',()=>{$('.site-header').classList.toggle('scrolled',scrollY>8);$('#toTop').hidden=scrollY<600},{passive:true});
 $('#toTop').addEventListener('click',()=>scrollTo({top:0,behavior:'smooth'}));
 
 /* ---------- Router ---------- */
