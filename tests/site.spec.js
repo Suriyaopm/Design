@@ -3,31 +3,33 @@ const { test, expect } = require('@playwright/test');
 const path = require('path');
 
 const URL = 'file:///' + path.resolve(__dirname, '..', 'college-prototype.html').replace(/\\/g, '/');
+const MAP_LINK = 'https://maps.app.goo.gl/oxEk7jyK31JKqSwg8';
 const PAGES = {
-  home: 'Rooted in 1921.',
-  about: 'A hundred and five years in Tambaram',
-  academics: 'How study works at Marudham',
-  programmes: 'Programmes offered',
+  home: 'St. Mary’s College of Education & Research Institute',
+  about: 'About St. Mary’s',
+  academics: 'Academics at St. Mary’s',
+  programmes: 'Course offered',
   departments: 'Departments',
-  faculty: 'Faculty directory',
-  syllabus: 'Syllabus & regulations',
-  admission: 'Admissions 2027–28',
-  library: 'Centenary Library',
-  placement: 'Career Development & Placement Cell',
+  faculty: 'Faculty',
+  syllabus: 'B.Ed. syllabus',
+  admission: 'Admission & fee',
+  library: 'Library',
+  placement: 'Guidance & Placement Cell',
   achievements: 'Achievements',
   gallery: 'Gallery',
-  alumni: 'Marudham Alumni Association',
+  alumni: 'Alumni Association',
   helpdesk: 'Help Desk',
-  contact: 'Contact & directions',
+  contact: 'Contact us',
 };
 
 /** Open a page of the prototype and collect console errors. */
 async function open(page, hash = 'home') {
   const errors = [];
   page.on('pageerror', e => errors.push(e.message));
-  page.on('console', m => { if (m.type() === 'error' && !/fonts\.(googleapis|gstatic)/.test(m.text())) errors.push(m.text()); });
-  // Google Fonts is an external dependency that can be slow on some networks; stub it so timing stays deterministic.
+  page.on('console', m => { if (m.type() === 'error' && !/fonts\.(googleapis|gstatic)|maps\.google/.test(m.text())) errors.push(m.text()); });
+  // Google Fonts and the embedded Google Map are external; stub them so timing stays deterministic.
   await page.route(/fonts\.(googleapis|gstatic)\.com/, r => r.fulfill({ status: 200, contentType: 'text/css', body: '' }));
+  await page.route(/maps\.google\.com/, r => r.fulfill({ status: 200, contentType: 'text/html', body: '<p>map</p>' }));
   await page.goto(URL + '#' + hash, { waitUntil: 'domcontentloaded' });
   return errors;
 }
@@ -37,7 +39,7 @@ const isMobile = testInfo => testInfo.project.name === 'mobile';
 test.describe('Loading and layout', () => {
   test('home loads without script errors', async ({ page }) => {
     const errors = await open(page);
-    await expect(page).toHaveTitle('Marudham College Website');
+    await expect(page).toHaveTitle("St. Mary's College of Education and Research Institute");
     await expect(visiblePage(page).locator('h1').first()).toContainText(PAGES.home);
     expect(errors).toEqual([]);
   });
@@ -56,7 +58,6 @@ test.describe('Loading and layout', () => {
       const vp = visiblePage(page);
       await expect(vp).toHaveAttribute('data-page', hash);
       await expect(vp.locator('h1').first()).toContainText(heading);
-      // every image on the visible page has actually loaded
       const broken = await vp.locator('img').evaluateAll(imgs => Promise.all(imgs.map(async i => {
         await i.decode().catch(() => {});
         return i.naturalWidth > 0 ? null : i.getAttribute('src');
@@ -74,10 +75,10 @@ test.describe('Header and navigation', () => {
     test.skip(isMobile(ti), 'desktop menu only');
     await open(page);
     const boxes = await page.locator('.menu > li > a, .menu > li > button').evaluateAll(els => els.map(e => {
-      const r = e.getBoundingClientRect(); const lh = parseFloat(getComputedStyle(e).lineHeight) || 22;
-      return { t: e.textContent.trim(), top: Math.round(r.top), h: Math.round(r.height), lines: Math.round(e.scrollHeight / lh) };
+      const r = e.getBoundingClientRect();
+      return { t: e.textContent.trim(), top: Math.round(r.top), h: Math.round(r.height) };
     }));
-    expect(boxes.length).toBe(10);
+    expect(boxes.length).toBe(8);
     expect(new Set(boxes.map(b => b.top)).size).toBe(1);
     expect(new Set(boxes.map(b => b.h)).size).toBe(1);
     const wrapped = await page.locator('.menu > li > a, .menu > li > button').evaluateAll(els => els.filter(e => {
@@ -89,7 +90,7 @@ test.describe('Header and navigation', () => {
   test('every desktop menu link opens its page', async ({ page }, ti) => {
     test.skip(isMobile(ti), 'desktop menu only');
     await open(page);
-    for (const hash of ['about', 'admission', 'library', 'placement', 'achievements', 'helpdesk', 'contact', 'home']) {
+    for (const hash of ['about', 'admission', 'placement', 'helpdesk', 'contact', 'home']) {
       await page.locator(`.menu a[data-nav="${hash}"]`).click();
       await expect(visiblePage(page)).toHaveAttribute('data-page', hash);
       await expect(page.locator(`.menu a[data-nav="${hash}"]`)).toHaveClass(/on/);
@@ -102,14 +103,14 @@ test.describe('Header and navigation', () => {
     const acad = page.locator('.menu > li[data-group="academics"]');
     await acad.hover();
     await expect(acad.locator('.submenu')).toBeVisible();
-    for (const hash of ['programmes', 'departments', 'faculty', 'syllabus', 'academics']) {
+    for (const hash of ['programmes', 'departments', 'faculty', 'syllabus', 'library', 'academics']) {
       await acad.hover();
       await acad.locator(`.submenu a[href="#${hash}"]`).click();
       await expect(visiblePage(page)).toHaveAttribute('data-page', hash);
       await expect(acad.locator('button')).toHaveClass(/on/);
     }
     const camp = page.locator('.menu > li[data-group="campus"]');
-    for (const hash of ['gallery', 'alumni']) {
+    for (const hash of ['achievements', 'gallery', 'alumni']) {
       await camp.hover();
       await camp.locator(`.submenu a[href="#${hash}"]`).click();
       await expect(visiblePage(page)).toHaveAttribute('data-page', hash);
@@ -131,30 +132,84 @@ test.describe('Header and navigation', () => {
     await expect(page.locator('#mobTitle')).toHaveText('Library');
   });
 
-  test('admissions marquee is visible, scrolling and links to Admission', async ({ page }) => {
+  test('home is minimal: teal slider band and Latest News strip carry the admission notice', async ({ page }) => {
     await open(page);
+    await expect(page.locator('.admit')).toBeHidden();
+    await expect(page.locator('.hero-band')).toBeVisible();
+    await expect(page.locator('.newsbar .tag')).toHaveText(/Latest News/i);
+    await expect(page.locator('#newsRun span').first()).toContainText('Admissions open for the B.Ed. programme');
+    const teal = await page.locator('.hero-band').evaluate(e => getComputedStyle(e).backgroundColor);
+    expect(teal).toBe('rgb(12, 140, 142)');
+    expect(await page.locator('.newsbar').evaluate(e => getComputedStyle(e).backgroundColor)).toBe(teal);
+    expect(await page.locator('.topbar').evaluate(e => getComputedStyle(e).backgroundColor)).toBe(teal);
+  });
+
+  test('admissions marquee is visible, scrolling and links to Admission', async ({ page }) => {
+    await open(page, 'about');
     const strip = page.locator('.admit');
     await expect(strip).toBeVisible();
     await expect(strip.locator('.tag')).toHaveText(/Admissions Open/i);
-    await expect(page.locator('#admitRun span').first()).toContainText('Admissions open for 2027–28');
-    const anim = await page.locator('#admitRun').evaluate(e => getComputedStyle(e).animationName);
-    expect(anim).toBe('run');
+    await expect(page.locator('#admitRun span').first()).toContainText('Admissions open for the B.Ed. programme');
+    expect(await page.locator('#admitRun').evaluate(e => getComputedStyle(e).animationName)).toBe('run');
     const x1 = await page.locator('#admitRun').evaluate(e => new DOMMatrix(getComputedStyle(e).transform).m41);
     await page.waitForTimeout(800);
     const x2 = await page.locator('#admitRun').evaluate(e => new DOMMatrix(getComputedStyle(e).transform).m41);
     expect(x2).toBeLessThan(x1);
   });
 
-  test('theme toggle switches between light and dark', async ({ page }) => {
+  test('theme picker switches between teal and maroon and remembers the choice', async ({ page }) => {
     await open(page);
-    const bg = () => page.evaluate(() => getComputedStyle(document.body).backgroundColor);
-    const before = await bg();
-    await page.locator('#themeBtn').click();
-    const t1 = await page.evaluate(() => document.documentElement.dataset.theme);
-    expect(['dark', 'light']).toContain(t1);
-    expect(await bg()).not.toBe(before);
-    await page.locator('#themeBtn').click();
-    expect(await bg()).toBe(before);
+    const band = () => page.locator('.hero-band').evaluate(e => getComputedStyle(e).backgroundColor);
+    const teal = page.locator('.sw[data-palette="teal"]'), maroon = page.locator('.sw[data-palette="maroon"]');
+    await expect(teal).toBeVisible();
+    await expect(teal).toHaveAttribute('aria-pressed', 'true');
+    expect(await band()).toBe('rgb(12, 140, 142)');
+    await maroon.click();
+    await expect(maroon).toHaveAttribute('aria-pressed', 'true');
+    await expect(teal).toHaveAttribute('aria-pressed', 'false');
+    expect(await band()).toBe('rgb(123, 28, 42)');
+    expect(await page.locator('.topbar').evaluate(e => getComputedStyle(e).backgroundColor)).toBe('rgb(123, 28, 42)');
+    await expect.poll(() => page.locator('.btn-brand').first().evaluate(e => getComputedStyle(e).backgroundColor)).toBe('rgb(123, 28, 42)');
+    expect(await page.evaluate(() => getComputedStyle(document.body).backgroundColor)).toBe('rgb(255, 253, 249)');
+    await page.goto(URL + '#about', { waitUntil: 'domcontentloaded' });
+    await expect(page.locator('html')).toHaveAttribute('data-palette', 'maroon');
+    expect(await visiblePage(page).locator('.phead').evaluate(e => getComputedStyle(e).backgroundColor)).toBe('rgb(86, 19, 32)');
+    await page.locator('.sw[data-palette="teal"]').click();
+    await expect(page.locator('html')).not.toHaveAttribute('data-palette', /.+/);
+    expect(await page.locator('.topbar').evaluate(e => getComputedStyle(e).backgroundColor)).toBe('rgb(12, 140, 142)');
+  });
+
+  test('light theme only, even when the system prefers dark', async ({ page }) => {
+    await page.emulateMedia({ colorScheme: 'dark' });
+    await open(page);
+    await expect(page.locator('#themeBtn')).toHaveCount(0);
+    expect(await page.evaluate(() => getComputedStyle(document.body).backgroundColor)).toBe('rgb(246, 251, 251)');
+  });
+
+  test('college name, logo and real contact details are shown', async ({ page }) => {
+    await open(page);
+    await expect(page.locator('.brandmark .nm')).toHaveText('St. Mary’s');
+    await expect(page.locator('.brandmark .sub')).toContainText('College of Education & Research Institute');
+    await expect(page.locator('.brandmark .sub')).toContainText('Chengalpattu');
+    expect(await page.locator('.brandmark img.logo').evaluate(i => i.decode().then(() => i.naturalWidth > 0))).toBe(true);
+    const f = page.locator('footer .fcontact');
+    await expect(f).toContainText('G.S.T. Road, J.C.K. Nagar, Chengalpattu, Tamil Nadu – 603002');
+    await expect(f).toContainText('044-2742 3507');
+    await expect(f).toContainText('+91 90476 96006');
+    await expect(f).toContainText('st.maryscoed.cpt@gmail.com');
+    await expect(page.locator('.topbar')).toContainText('st.maryscoed.cpt@gmail.com');
+    await expect(page.locator('footer')).toContainText('Love and Serve');
+  });
+
+  test('no private staff details are published', async ({ page }) => {
+    await open(page);
+    const html = await page.content();
+    // Aadhaar numbers, dates of birth, approval order numbers and personal email ids from the source document
+    for (const secret of ['646177487259', '522297712977', '781493677276', '836677079721', '21-01-1983', '13-02-1988', '06-11-2020', 'TNTEU/R/', 'sundarilayaathur', 'prem.navisjuly2', 'kppoorani', 'suriya.edu']) {
+      expect(html).not.toContain(secret);
+    }
+    const emails = [...new Set(html.match(/[\w.+-]+@[\w-]+\.[a-z]{2,}(?:\.[a-z]{2,})*/gi) || [])].filter(e => !/example\.com$/.test(e));
+    expect(emails).toEqual(['st.maryscoed.cpt@gmail.com']);
   });
 });
 
@@ -179,7 +234,6 @@ test.describe('Hero slider', () => {
     await page.locator('#slNext').click();
     await expect(page.locator('#slNow')).toHaveText('01');
     await page.waitForTimeout(1600);
-    // after the wrap the track rests on a real slide, not off-screen
     const tx = await page.locator('#track').evaluate(e => e.style.transform);
     expect(['translateX(0%)', 'translateX(-0%)', 'translateX(-400%)']).toContain(tx);
     await expect(page.locator('#track .slide.on img').first()).toBeVisible();
@@ -205,193 +259,280 @@ test.describe('Hero slider', () => {
     expect(gap).toBeLessThan(6_000);
   });
 
-  test('all four slide photos load', async ({ page }) => {
+  test('slider: college photo first, then three education photos, no text on them', async ({ page }) => {
     await open(page);
-    const ok = await page.locator('#track .slide img').evaluateAll(imgs => Promise.all(imgs.map(async i => { await i.decode().catch(() => {}); return i.naturalWidth > 0; })));
-    expect(ok.length).toBe(5); // 4 slides + loop clone
-    expect(ok.every(Boolean)).toBe(true);
+    const srcs = await page.locator('#track .slide:not([aria-hidden]) img.photo').evaluateAll(l => l.map(i => i.getAttribute('src')));
+    expect(srcs).toEqual(['assets/img/college-front-hd.webp', 'assets/img/slide-teaching.webp', 'assets/img/slide-students.webp', 'assets/img/slide-library.webp']);
+    const sizes = await page.locator('#track img.photo').evaluateAll(l => Promise.all(l.map(async i => { await i.decode().catch(() => {}); return i.naturalWidth; })));
+    expect(sizes.every(w => w === 2880)).toBe(true);
+    // no visible caption text over the photos (the page heading is kept for screen readers only)
+    const visibleText = await page.locator('#track .slide').evaluateAll(l => l.map(f => { const c = f.cloneNode(true); c.querySelectorAll('.sr-only').forEach(x => x.remove()); return c.textContent.trim(); }).filter(Boolean));
+    expect(visibleText).toEqual([]);
+    const ratio = await page.locator('#track .slide').first().evaluate(e => e.getBoundingClientRect().width / e.getBoundingClientRect().height);
+    if (page.viewportSize().width > 640) expect(Math.abs(ratio - 3)).toBeLessThan(0.05); // same 3:1 shape as the photos, so nothing is cropped
   });
 });
 
-test.describe('Gallery lightbox', () => {
-  test('opens a photo, steps through it and closes with the X button', async ({ page }) => {
+test.describe('Home page layout', () => {
+  test('home flows: slider, news, welcome, counters, motto, message, life, gallery, admission call band', async ({ page }) => {
+    await open(page);
+    await expect(page.locator('.quick')).toHaveCount(0); // quick-link box removed
+    const order = await visiblePage(page).evaluate(p => [...p.children].map(c => c.id || c.className));
+    expect(order).toEqual(['hero-band', 'newsbar', 'section', 'home-stats', 'mottoband', 'section alt', 'home-features', 'home-gallery', 'home-admit']);
+    const f3 = page.locator('#home-features .f3');
+    await expect(f3).toHaveCount(3);
+    await expect(f3.locator('.f3-h')).toHaveText(['Life at St. Mary’s', 'Library & Learning', 'Faculty & Mentoring']);
+    await f3.nth(1).click();
+    await expect(visiblePage(page)).toHaveAttribute('data-page', 'library');
+    await page.goto(URL + '#academics', { waitUntil: 'domcontentloaded' });
+    await expect(page.locator('#lifeGrid .hd-cat')).toHaveCount(6); // the six activity cards now live on Academics
+    await page.goto(URL + '#home', { waitUntil: 'domcontentloaded' });
+    const cta = page.locator('#home-admit');
+    await expect(cta).toContainText('st.maryscoed.cpt@gmail.com');
+    await expect(cta).toContainText('Admissions open');
+    await expect(cta.locator('a[href="tel:+919047696006"]')).toBeVisible();
+  });
+});
+
+test.describe('Animated counters', () => {
+  test('numbers start at 0 and count up to the real figures when the band scrolls into view', async ({ page }) => {
+    await open(page);
+    const band = page.locator('#home-stats');
+    const nums = band.locator('.num');
+    await expect(nums).toHaveCount(4);
+    const seen = await band.evaluate(e => { const r = e.getBoundingClientRect(); return Math.max(0, Math.min(innerHeight, r.bottom) - Math.max(0, r.top)) / r.height; });
+    expect(seen).toBeLessThan(0.4); // counting starts only once 40% of the band is on screen
+    expect(await nums.allTextContents()).toEqual(['0', '0', '0', '0']); // nothing counted before the visitor arrives
+    await band.scrollIntoViewIfNeeded();
+    await page.waitForTimeout(400);
+    const mid = (await nums.allTextContents()).map(Number);
+    expect(mid.some(v => v > 0)).toBe(true); // counting has started
+    const t0 = Date.now();
+    await expect(band).toHaveAttribute('data-done', '1', { timeout: 6000 });
+    expect(Date.now() - t0).toBeGreaterThan(1200); // the count runs for about 2 seconds
+    const years = String(new Date().getFullYear() - 2008);
+    expect(await nums.allTextContents()).toEqual([years, '8', '20', '16']);
+    const shown = await band.locator('.cnt strong').allTextContents();
+    expect(shown).toEqual([years + '+', '8', '20+', '16']);
+    await expect(band.locator('.lbl')).toHaveText(['Years of Service', 'Departments', 'Staff Members', 'Committees']);
+    expect(await band.locator('img.sp-bg').evaluate(i => i.decode().then(() => i.naturalWidth))).toBe(2880); // college photo behind the numbers
+  });
+
+  test('counters show final values straight away for visitors who prefer reduced motion', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await open(page);
+    expect(await page.locator('#home-stats .num').allTextContents()).toEqual([String(new Date().getFullYear() - 2008), '8', '20', '16']);
+  });
+});
+
+test.describe('Events gallery', () => {
+  test('home shows an Events Gallery with 2 large and 3 small photos and an Explore More link', async ({ page }) => {
+    await open(page);
+    const sec = page.locator('#home-gallery');
+    await expect(sec.locator('h2')).toHaveText(/Events Gallery/i);
+    await expect(sec.locator('.ev')).toHaveCount(5);
+    await expect(sec.locator('a.ev-more')).toHaveAttribute('href', '#gallery');
+    if (page.viewportSize().width > 900) {
+      const w = await sec.locator('.ev').evaluateAll(l => l.map(e => Math.round(e.getBoundingClientRect().width)));
+      expect(w[0]).toBe(w[1]);
+      expect(w[0]).toBeGreaterThan(w[2] * 1.4); // first row is wider than the three below
+      expect(new Set(w.slice(2)).size).toBe(1);
+    }
+    await sec.locator('a.ev-more').click();
+    await expect(visiblePage(page)).toHaveAttribute('data-page', 'gallery');
+    await expect(page.locator('#galGrid .ev')).toHaveCount(8);
+  });
+
+  test('hovering a photo reveals the event name and View More', async ({ page }, ti) => {
+    test.skip(isMobile(ti), 'hover is a desktop interaction');
     await open(page, 'gallery');
-    await page.locator('#galGrid .gtile').first().click();
+    const tile = page.locator('#galGrid .ev').first();
+    const ov = tile.locator('.ov');
+    await page.mouse.move(2, 2);
+    await expect.poll(() => ov.evaluate(e => +getComputedStyle(e).opacity)).toBe(0);
+    await tile.hover();
+    await expect.poll(() => ov.evaluate(e => +getComputedStyle(e).opacity)).toBe(1);
+    await expect(ov).toContainText('Graduation Day');
+    await expect(ov).toContainText('View More');
+  });
+
+  test('event names stay readable on touch screens without hovering', async ({ page }, ti) => {
+    test.skip(!isMobile(ti), 'touch only');
+    await open(page);
+    const ov = page.locator('#home-gallery .ev .ov').first();
+    expect(await ov.evaluate(e => +getComputedStyle(e).opacity)).toBe(1);
+    await expect(ov).toContainText('Graduation Day');
+  });
+
+  test('a photo opens full size, steps through and closes with the X button', async ({ page }) => {
+    await open(page, 'gallery');
+    await page.locator('#galGrid .ev').first().click();
     const lb = page.locator('#lightbox');
     await expect(lb).toBeVisible();
-    await expect(page.locator('#lbCount')).toHaveText('1 / 16');
+    await expect(page.locator('#lbCount')).toHaveText('1 / 8');
+    await expect(page.locator('#lbCap')).toHaveText('Graduation Day');
     await page.locator('#lbNext').click();
-    await expect(page.locator('#lbCount')).toHaveText('2 / 16');
+    await expect(page.locator('#lbCount')).toHaveText('2 / 8');
     await page.locator('#lbPrev').click();
     await page.locator('#lbPrev').click();
-    await expect(page.locator('#lbCount')).toHaveText('16 / 16');
-    expect(await page.locator('#lbImg').evaluate(i => i.complete && i.naturalWidth > 0)).toBe(true);
+    await expect(page.locator('#lbCount')).toHaveText('8 / 8');
+    expect(await page.locator('#lbImg').evaluate(i => i.decode().then(() => i.naturalWidth > 0))).toBe(true);
     await page.locator('#lbClose').click();
     await expect(lb).toBeHidden();
   });
 
-  test('closes with Escape and by clicking the backdrop', async ({ page }) => {
-    await open(page, 'gallery');
-    await page.locator('#galGrid .gtile').nth(2).click();
+  test('home gallery opens the same viewer; Escape and backdrop close it', async ({ page }) => {
+    await open(page);
+    await page.locator('#home-gallery .ev').nth(2).click();
     await expect(page.locator('#lightbox')).toBeVisible();
+    await expect(page.locator('#lbCount')).toHaveText('3 / 5');
     await page.keyboard.press('Escape');
     await expect(page.locator('#lightbox')).toBeHidden();
-    await page.locator('#galGrid .gtile').nth(2).click();
+    await page.locator('#home-gallery .ev').nth(0).click();
     await page.mouse.click(8, 300);
-    await expect(page.locator('#lightbox')).toBeHidden();
-  });
-
-  test('filters by category', async ({ page }) => {
-    await open(page, 'gallery');
-    await page.locator('#galSeg button[data-c="Sports"]').click();
-    await expect(page.locator('#galGrid .gtile')).toHaveCount(2);
-    await page.locator('#galGrid .gtile').first().click();
-    await expect(page.locator('#lbCount')).toHaveText('1 / 2');
-    await page.locator('#lbClose').click();
-  });
-
-  test('home gallery strip opens the same viewer', async ({ page }) => {
-    await open(page);
-    await page.locator('#homeGallery .gtile').first().click();
-    await expect(page.locator('#lightbox')).toBeVisible();
-    await expect(page.locator('#lbCount')).toHaveText('1 / 5');
-    await page.locator('#lbClose').click();
     await expect(page.locator('#lightbox')).toBeHidden();
   });
 });
 
 test.describe('Academic pages', () => {
-  test('programmes filter and search', async ({ page }) => {
+  test('course page shows the B.Ed. programme and its pedagogy subjects', async ({ page }) => {
     await open(page, 'programmes');
-    const all = await page.locator('#progGrid .prog').count();
-    expect(all).toBeGreaterThan(40);
-    await page.locator('#progSeg button[data-l="PG"]').click();
-    const pg = page.locator('#progGrid .prog');
-    expect(await pg.count()).toBeLessThan(all);
-    await expect(pg.locator('.chip').first()).toHaveText('PG');
-    await page.locator('#progSeg button[data-l="all"]').click();
-    await page.locator('#progQ').fill('chemistry');
-    await expect(page.locator('#progGrid .prog')).toHaveCount(3);
-    await page.locator('#progQ').fill('zzzz');
-    await expect(page.locator('#progGrid')).toContainText('No programme matches');
+    await expect(page.locator('#bedCard h2')).toHaveText('Bachelor of Education (B.Ed.)');
+    await expect(page.locator('#bedCard')).toContainText('2 years · 4 semesters');
+    await expect(page.locator('#bedCard')).toContainText('Tamil Nadu Teachers Education University');
+    await expect(page.locator('#pedagogy .chip')).toHaveText(['Tamil', 'English', 'Mathematics', 'Physical Science', 'Biological Science', 'Computer Science', 'History', 'Commerce']);
   });
 
-  test('departments: choose a department and filter by school', async ({ page }) => {
+  test('departments: eight departments, each with its own faculty', async ({ page }) => {
     await open(page, 'departments');
-    await expect(page.locator('#deptName')).toHaveText('Department of Chemistry');
-    await page.locator('#deptGrid [data-dept="ENG"]').click();
-    await expect(page.locator('#deptName')).toHaveText('Department of English');
-    await expect(page.locator('#deptGrid [data-dept="ENG"]')).toHaveClass(/sel/);
-    await page.locator('#deptSeg button[data-s="Sciences"]').click();
-    await expect(page.locator('#deptGrid .pcard')).toHaveCount(7);
+    await expect(page.locator('#deptGrid [data-dept]')).toHaveCount(8);
+    await expect(page.locator('#deptName')).toHaveText('Department of Tamil');
+    await expect(page.locator('#deptBox')).toContainText('Mrs. Josephine Kavitha. I');
+    await page.locator('#deptGrid [data-dept="HIS"]').click();
+    await expect(page.locator('#deptName')).toHaveText('Department of History');
+    await expect(page.locator('#deptGrid [data-dept="HIS"]')).toHaveClass(/sel/);
+    await expect(page.locator('#deptBox .fac')).toHaveCount(3);
     await page.locator('#deptBox a[data-fac]').click();
     await expect(visiblePage(page)).toHaveAttribute('data-page', 'faculty');
-    await expect(page.locator('#facDept')).toHaveValue('ENG');
+    await expect(page.locator('#facDept')).toHaveValue('History');
     await expect(page.locator('#facGrid .fac')).toHaveCount(3);
   });
 
-  test('home department card opens that department', async ({ page }) => {
+  test('departments live on their own page, not on home', async ({ page }) => {
     await open(page);
-    await page.locator('#homeDepts [data-dept="TAM"]').click();
+    await expect(visiblePage(page).locator('[data-dept]')).toHaveCount(0);
+    await page.goto(URL + '#departments', { waitUntil: 'domcontentloaded' });
     await expect(visiblePage(page)).toHaveAttribute('data-page', 'departments');
-    await expect(page.locator('#deptName')).toHaveText('Department of Tamil');
+    await expect(page.locator('#deptGrid [data-dept]').first()).toBeVisible();
   });
 
-  test('faculty search and department filter', async ({ page }) => {
+  test('faculty: all 16 teachers with search, subject filter and non-teaching staff', async ({ page }) => {
     await open(page, 'faculty');
-    expect(await page.locator('#facGrid .fac').count()).toBe(27);
-    await page.locator('#facQ').fill('machine learning');
+    await expect(page.locator('#facGrid .fac')).toHaveCount(16);
+    await expect(page.locator('#facGrid .fac').first()).toContainText('Dr. Sundar. L');
+    await expect(page.locator('#facGrid .fac').first()).toContainText('Principal');
+    await page.locator('#facQ').fill('music');
     await expect(page.locator('#facGrid .fac')).toHaveCount(1);
-    await expect(page.locator('#facGrid .fac h4')).toHaveText('Dr. Deepa Nathan');
+    await expect(page.locator('#facGrid .fac h4')).toHaveText('Mrs. Selva Malar. A. G');
     await page.locator('#facQ').fill('');
-    await page.locator('#facDept').selectOption('CHE');
-    await expect(page.locator('#facGrid .fac')).toHaveCount(2);
-    await expect(page.locator('#facCount')).toHaveText('2 faculty members shown');
+    await page.locator('#facDept').selectOption('History');
+    await expect(page.locator('#facGrid .fac')).toHaveCount(3);
+    await expect(page.locator('#facCount')).toHaveText('3 teaching staff shown');
+    await expect(page.locator('#staffGrid .fac')).toHaveCount(6);
+    await expect(page.locator('#staffGrid')).toContainText('Rev. Sr. Sagaya Cruz');
   });
 
-  test('syllabus filter, search and View PDF message', async ({ page }) => {
+  test('syllabus shows all four semesters and filters by semester', async ({ page }) => {
     await open(page, 'syllabus');
-    const total = await page.locator('#sylBody tr').count();
-    await page.locator('#sylSeg button[data-l="UG"]').click();
-    expect(await page.locator('#sylBody tr').count()).toBeLessThan(total);
-    await page.locator('#sylQ').fill('Physics');
-    await expect(page.locator('#sylBody tr')).toHaveCount(1);
-    await page.locator('#sylBody .js-syl').click();
-    await expect(page.locator('#toast')).toBeVisible();
-    await expect(page.locator('#toast')).toContainText('B.Sc. Physics');
+    await expect(page.locator('#sylGrid .sem')).toHaveCount(4);
+    await page.locator('#sylSeg button[data-s="1"]').click();
+    await expect(page.locator('#sylGrid .sem')).toHaveCount(1);
+    await expect(page.locator('#sylGrid .courses li')).toHaveCount(5);
+    await expect(page.locator('#sylGrid')).toContainText('Educational Psychology');
+    await page.locator('#sylSeg button[data-s="3"]').click();
+    await expect(page.locator('#sylGrid')).toContainText('A2 – Micro Teaching Record');
+    await expect(page.locator('#sylGrid')).toContainText('SWAYAM');
+    await expect(page.locator('#sylGrid')).toContainText('Total marks: 500');
+    await page.locator('#sylSeg button[data-s="4"]').click();
+    await expect(page.locator('#sylGrid')).toContainText('Value and Peace Education');
   });
 
-  test('library catalogue search', async ({ page }) => {
+  test('library rules and college rules are listed', async ({ page }) => {
     await open(page, 'library');
-    await page.locator('#opacQ').fill('tamil');
-    await expect(page.locator('#opacRes > div')).toHaveCount(1);
-    await page.locator('#opacQ').fill('ecology');
-    await expect(page.locator('#opacRes > div')).toHaveCount(2);
-    await page.locator('#opacQ').fill('qqqq');
-    await expect(page.locator('#opacRes')).toContainText('No records');
+    await expect(page.locator('#libRules li')).toHaveCount(6);
+    await expect(page.locator('#libRules')).toContainText('three books');
+    await page.goto(URL + '#academics', { waitUntil: 'domcontentloaded' });
+    await expect(page.locator('#rules li')).toHaveCount(12);
+    await expect(page.locator('#rules li').first()).toContainText('9.30 am');
   });
 
-  test('achievements filter', async ({ page }) => {
-    await open(page, 'achievements');
-    await expect(page.locator('#achGrid .pcard')).toHaveCount(12);
-    await page.locator('#achSeg button[data-c="Research"]').click();
-    await expect(page.locator('#achGrid .pcard')).toHaveCount(3);
+  test('about page carries the real vision, mission, leadership and committees', async ({ page }) => {
+    await open(page, 'about');
+    await expect(visiblePage(page)).toContainText('founded in 2008');
+    await expect(page.locator('#ab-vision')).toContainText('Love and Serve');
+    await expect(page.locator('#ab-vision')).toContainText('Spiritually oriented');
+    await expect(page.locator('#ab-lead')).toContainText('Congregation of Sisters of St. Ann of Providence');
+    await expect(page.locator('#ab-lead')).toContainText('Rev. Sr. Sagaya Cruz');
+    await expect(page.locator('#committees .committee')).toHaveCount(16);
+    await page.locator('.subnav a[data-jump="ab-emblem"]').click();
+    await expect(page.locator('#ab-emblem')).toBeInViewport();
   });
 });
 
-test.describe('Admission and forms', () => {
-  test('admission countdown and section jump links', async ({ page }) => {
+test.describe('Admission, contact and forms', () => {
+  test('admission shows real eligibility rules and minimum marks', async ({ page }) => {
     await open(page, 'admission');
-    await expect(page.locator('#countdown b').first()).toHaveText(/^\d{2,3}$/);
+    await expect(page.locator('#eligGrid .card')).toHaveCount(4);
+    await expect(page.locator('#ad-marks tbody tr')).toHaveCount(4);
+    await expect(page.locator('#ad-marks')).toContainText('MBC / DNC');
+    await expect(page.locator('#ad-marks')).toContainText('43%');
     await page.locator('.subnav a[data-jump="ad-fees"]').click();
     await expect(page.locator('#ad-fees')).toBeInViewport();
   });
 
-  test('admission form validates, then confirms', async ({ page }) => {
-    await open(page, 'admission');
-    const form = page.locator('#admForm');
-    await form.locator('button[type="submit"]').click();
-    await expect(form.locator('.form-ok')).toBeHidden(); // required fields block submit
-    await page.fill('#ad-name', 'Test Student');
-    await page.fill('#ad-phone', '9876543210');
-    await page.fill('#ad-email', 'student@example.com');
-    await page.selectOption('#ad-prog', 'B.Sc. Physics');
-    await form.locator('button[type="submit"]').click();
-    await expect(form.locator('.form-ok')).toBeVisible();
-    await expect(form.locator('.form-ok')).toContainText('Your interest is recorded');
-  });
-
-  test('help desk ticket gets a ticket number', async ({ page }) => {
-    await open(page, 'helpdesk');
-    await expect(page.locator('#hdGrid .hd-cat')).toHaveCount(8);
-    await page.fill('#hd-name', 'Parent');
-    await page.selectOption('#hd-cat', 'Scholarships');
-    await page.fill('#hd-msg', 'When is the renewal deadline?');
-    await page.locator('#hdForm button[type="submit"]').click();
-    await expect(page.locator('#ticketId')).toHaveText(/^MCAS-HD-2026-\d{4}$/);
-  });
-
-  test('alumni and contact forms confirm', async ({ page }) => {
-    await open(page, 'alumni');
-    await page.fill('#al-name', 'Old Student');
-    await page.fill('#al-batch', '2010');
-    await page.fill('#al-email', 'alum@example.com');
-    await page.locator('#alForm button[type="submit"]').click();
-    await expect(page.locator('#alForm .form-ok')).toBeVisible();
+  test('there are no forms anywhere; visitors are pointed to phone and email instead', async ({ page }) => {
+    await open(page);
+    await expect(page.locator('form')).toHaveCount(0);
+    await expect(page.locator('textarea')).toHaveCount(0);
+    await expect(page.locator('input:not(#facQ)')).toHaveCount(0); // only the faculty search box remains
+    await expect(page.locator('body')).not.toContainText('Register interest');
+    await expect(page.locator('body')).not.toContainText('Online Application Form');
+    for (const hash of ['admission', 'helpdesk']) {
+      await page.goto(URL + '#' + hash, { waitUntil: 'domcontentloaded' });
+      const tiles = visiblePage(page).locator('.reach-tile');
+      await expect(tiles).toHaveCount(3);
+      await expect(tiles.nth(0)).toHaveAttribute('href', 'tel:+914427423507');
+      await expect(tiles.nth(1)).toHaveAttribute('href', 'tel:+919047696006');
+      await expect(tiles.nth(2)).toHaveAttribute('href', 'mailto:st.maryscoed.cpt@gmail.com');
+      await expect(tiles.nth(1)).toContainText('+91 90476 96006');
+    }
     await page.goto(URL + '#contact', { waitUntil: 'domcontentloaded' });
-    await page.fill('#ct-name', 'Visitor');
-    await page.fill('#ct-email', 'v@example.com');
-    await page.fill('#ct-msg', 'Visiting hours?');
-    await page.locator('#ctForm button[type="submit"]').click();
-    await expect(page.locator('#ctForm .form-ok')).toBeVisible();
+    await expect(visiblePage(page).locator('a.tel[href="tel:+919047696006"]')).toHaveText('+91 90476 96006');
+    await expect(visiblePage(page).locator('.reach-tile')).toHaveCount(0); // no duplicate tiles on Contact
+    await page.goto(URL + '#alumni', { waitUntil: 'domcontentloaded' });
+    await expect(page.locator('#al-join')).toContainText('Call or email the college office');
   });
 
-  test('FAQ accordions expand', async ({ page }) => {
-    await open(page, 'admission');
-    const d = page.locator('#ad-faq details').first();
-    await expect(d).not.toHaveAttribute('open', '');
-    await d.locator('summary').click();
-    await expect(d).toHaveAttribute('open', '');
+  test('admission strip and header point to a phone call, not an online form', async ({ page }) => {
+    await open(page, 'about');
+    await expect(page.locator('.admit .btn')).toHaveAttribute('href', 'tel:+919047696006');
+    await expect(page.locator('.admit .btn')).toHaveText('Call 90476 96006');
+    await page.goto(URL + '#admission', { waitUntil: 'domcontentloaded' });
+    await expect(visiblePage(page).locator('.phead a[href="tel:+919047696006"]')).toBeVisible();
+    await page.locator('.subnav a[data-jump="ad-contact"]').click();
+    await expect(page.locator('#ad-contact')).toBeInViewport();
+  });
+
+  test('the Google Map lives only on the Contact page', async ({ page }) => {
+    await open(page);
+    await expect(page.locator('#home-map')).toHaveCount(0);
+    await expect(visiblePage(page).locator('iframe')).toHaveCount(0);
+    await page.goto(URL + '#contact', { waitUntil: 'domcontentloaded' });
+    const map = visiblePage(page).locator('iframe.mapframe');
+    await expect(map).toBeVisible();
+    expect(await map.getAttribute('src')).toContain('Chengalpattu');
+    await expect(visiblePage(page).locator(`a[href="${MAP_LINK}"]`)).toBeVisible();
+    await expect(page.locator('iframe.mapframe')).toHaveCount(1);
   });
 
   test('back-to-top button appears after scrolling and works', async ({ page }) => {
