@@ -132,16 +132,16 @@ test.describe('Header and navigation', () => {
     await expect(page.locator('#mobTitle')).toHaveText('Library');
   });
 
-  test('home is minimal: teal slider band and Latest News strip carry the admission notice', async ({ page }) => {
+  test('home is minimal: maroon slider band and Latest News strip carry the admission notice', async ({ page }) => {
     await open(page);
     await expect(page.locator('.admit')).toBeHidden();
     await expect(page.locator('.hero-band')).toBeVisible();
     await expect(page.locator('.newsbar .tag')).toHaveText(/Latest News/i);
     await expect(page.locator('#newsRun span').first()).toContainText('Admissions open for the B.Ed. programme');
-    const teal = await page.locator('.hero-band').evaluate(e => getComputedStyle(e).backgroundColor);
-    expect(teal).toBe('rgb(12, 140, 142)');
-    expect(await page.locator('.newsbar').evaluate(e => getComputedStyle(e).backgroundColor)).toBe(teal);
-    expect(await page.locator('.topbar').evaluate(e => getComputedStyle(e).backgroundColor)).toBe(teal);
+    const band = await page.locator('.hero-band').evaluate(e => getComputedStyle(e).backgroundColor);
+    expect(band).toBe('rgb(123, 28, 42)');
+    expect(await page.locator('.newsbar').evaluate(e => getComputedStyle(e).backgroundColor)).toBe(band);
+    expect(await page.locator('.topbar').evaluate(e => getComputedStyle(e).backgroundColor)).toBe(band);
   });
 
   test('admissions marquee is visible, scrolling and links to Admission', async ({ page }) => {
@@ -157,33 +157,33 @@ test.describe('Header and navigation', () => {
     expect(x2).toBeLessThan(x1);
   });
 
-  test('theme picker switches between teal and maroon and remembers the choice', async ({ page }) => {
+  test('maroon is the default theme; the picker switches to teal and back, and remembers the choice', async ({ page }) => {
     await open(page);
     const band = () => page.locator('.hero-band').evaluate(e => getComputedStyle(e).backgroundColor);
     const teal = page.locator('.sw[data-palette="teal"]'), maroon = page.locator('.sw[data-palette="maroon"]');
-    await expect(teal).toBeVisible();
-    await expect(teal).toHaveAttribute('aria-pressed', 'true');
-    expect(await band()).toBe('rgb(12, 140, 142)');
-    await maroon.click();
+    await expect(page.locator('html')).toHaveAttribute('data-palette', 'maroon');
     await expect(maroon).toHaveAttribute('aria-pressed', 'true');
     await expect(teal).toHaveAttribute('aria-pressed', 'false');
     expect(await band()).toBe('rgb(123, 28, 42)');
-    expect(await page.locator('.topbar').evaluate(e => getComputedStyle(e).backgroundColor)).toBe('rgb(123, 28, 42)');
-    await expect.poll(() => page.locator('.btn-brand').first().evaluate(e => getComputedStyle(e).backgroundColor)).toBe('rgb(123, 28, 42)');
     expect(await page.evaluate(() => getComputedStyle(document.body).backgroundColor)).toBe('rgb(255, 253, 249)');
-    await page.goto(URL + '#about', { waitUntil: 'domcontentloaded' });
-    await expect(page.locator('html')).toHaveAttribute('data-palette', 'maroon');
-    expect(await visiblePage(page).locator('.phead').evaluate(e => getComputedStyle(e).backgroundColor)).toBe('rgb(86, 19, 32)');
-    await page.locator('.sw[data-palette="teal"]').click();
-    await expect(page.locator('html')).not.toHaveAttribute('data-palette', /.+/);
+    await teal.click();
+    await expect(teal).toHaveAttribute('aria-pressed', 'true');
+    expect(await band()).toBe('rgb(12, 140, 142)');
     expect(await page.locator('.topbar').evaluate(e => getComputedStyle(e).backgroundColor)).toBe('rgb(12, 140, 142)');
+    // the visitor's choice survives a reload and applies to inner pages
+    await page.goto(URL + '#about', { waitUntil: 'domcontentloaded' });
+    await expect(page.locator('html')).not.toHaveAttribute('data-palette', /.+/);
+    expect(await visiblePage(page).locator('.phead').evaluate(e => getComputedStyle(e).backgroundColor)).toBe('rgb(8, 106, 108)');
+    await page.locator('.sw[data-palette="maroon"]').click();
+    await expect(page.locator('html')).toHaveAttribute('data-palette', 'maroon');
+    await expect.poll(() => page.locator('.btn-brand').first().evaluate(e => getComputedStyle(e).backgroundColor)).toBe('rgb(123, 28, 42)');
   });
 
   test('light theme only, even when the system prefers dark', async ({ page }) => {
     await page.emulateMedia({ colorScheme: 'dark' });
     await open(page);
     await expect(page.locator('#themeBtn')).toHaveCount(0);
-    expect(await page.evaluate(() => getComputedStyle(document.body).backgroundColor)).toBe('rgb(246, 251, 251)');
+    expect(await page.evaluate(() => getComputedStyle(document.body).backgroundColor)).toBe('rgb(255, 253, 249)');
   });
 
   test('college name, logo and real contact details are shown', async ({ page }) => {
@@ -294,6 +294,18 @@ test.describe('Home page layout', () => {
     await expect(cta).toContainText('st.maryscoed.cpt@gmail.com');
     await expect(cta).toContainText('Admissions open');
     await expect(cta.locator('a[href="tel:+919047696006"]')).toBeVisible();
+  });
+});
+
+test.describe('Principal and admission photos', () => {
+  test('principal shows a placeholder photo; admission banner uses the college corridor photo', async ({ page }) => {
+    await open(page);
+    const pr = page.locator('img.portrait-img');
+    await expect(pr).toHaveAttribute('src', 'assets/img/principal-placeholder.svg');
+    expect(await pr.evaluate(i => i.decode().then(() => i.naturalWidth > 0))).toBe(true);
+    const ad = page.locator('#home-admit .as-photo img');
+    await expect(ad).toHaveAttribute('src', 'assets/img/admit-campus.webp');
+    expect(await ad.evaluate(i => i.decode().then(() => i.naturalWidth))).toBe(1800);
   });
 });
 

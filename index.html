@@ -790,8 +790,11 @@ ul.courses.plain{list-style:none;padding:0;margin:0 0 12px;display:grid;grid-tem
 @media (max-width:640px){.photos{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.alb-title{min-width:0}#galGrid.albums .ev:nth-child(n){grid-column:span 1;aspect-ratio:1/1}#galGrid.albums .ev:first-child{grid-column:span 2;aspect-ratio:16/10}#galGrid.albums .ev:last-child:nth-child(even){grid-column:span 2;aspect-ratio:16/10}}
 
 #galAlbum,#galAlbums{scroll-margin-top:calc(var(--nav-h) + 20px)}
+
+.portrait-img{width:100%;max-width:320px;aspect-ratio:4/5;object-fit:cover;border-radius:14px;box-shadow:var(--shadow);background:var(--soft)}
+@media (max-width:640px){.portrait-img{width:120px;max-width:120px;aspect-ratio:1;border-radius:50%;object-position:50% 25%}}
 </style>
-<script>try{if(localStorage.getItem('sm-palette')==='maroon')document.documentElement.dataset.palette='maroon'}catch(e){}</script>
+<script>var smp='maroon';try{smp=localStorage.getItem('sm-palette')||'maroon'}catch(e){}if(smp!=='teal')document.documentElement.dataset.palette='maroon';</script>
 
 <!-- icon sprite -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -835,7 +838,7 @@ ul.courses.plain{list-style:none;padding:0;margin:0 0 12px;display:grid;grid-tem
     </div>
     <div class="row">
       <nav class="qlinks hide-sm" aria-label="Quick links"><a href="#departments">Departments</a><a href="#faculty">Faculty</a><a href="#syllabus">Syllabus</a><a href="#library">Library</a><a href="#alumni">Alumni</a><a href="#helpdesk">Help Desk</a><a href="#about" data-jump="ab-accr">NCTE</a></nav>
-      <div class="palette" role="group" aria-label="Colour theme"><span class="lbl">Theme</span><button type="button" class="sw" data-palette="teal" aria-pressed="true" aria-label="Teal theme" title="Teal"></button><button type="button" class="sw" data-palette="maroon" aria-pressed="false" aria-label="Maroon theme" title="Maroon"></button></div>
+      <div class="palette" role="group" aria-label="Colour theme"><span class="lbl">Theme</span><button type="button" class="sw" data-palette="teal" aria-pressed="false" aria-label="Teal theme" title="Teal"></button><button type="button" class="sw" data-palette="maroon" aria-pressed="true" aria-label="Maroon theme" title="Maroon"></button></div>
     </div>
   </div>
 </div>
@@ -991,7 +994,7 @@ ul.courses.plain{list-style:none;padding:0;margin:0 0 12px;display:grid;grid-tem
 
   <section class="section alt">
     <div class="wrap message">
-      <div class="portrait-ph" role="img" aria-label="Principal’s photograph to be added"><span class="ini">SL</span><span class="note">Photo to be added</span></div>
+      <img class="portrait-img" src="assets/img/principal-placeholder.svg" alt="Principal’s photograph (placeholder)" width="400" height="500">
       <div class="stack" style="gap:18px">
         <div class="shead left" style="margin-bottom:0"><span class="eyebrow">From the pages of the Institution</span><span class="rule"><i></i></span></div>
         <p class="quote">Education aims at man making and character building apart from knowledge awakening. It helps one to face the challenges of the world.</p>
@@ -1019,7 +1022,7 @@ ul.courses.plain{list-style:none;padding:0;margin:0 0 12px;display:grid;grid-tem
   </section>
 
   <section class="admit-split" id="home-admit" aria-label="Admissions">
-    <div class="as-photo"><img src="assets/img/lawn-study.webp" alt="Students studying together outdoors"></div>
+    <div class="as-photo"><img src="assets/img/admit-campus.webp" alt="Student teachers walking along the college corridor"></div>
     <div class="as-panel">
       <span class="eyebrow" style="color:var(--hl)">Admissions open</span>
       <h2>B.Ed. Admissions</h2>
