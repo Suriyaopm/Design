@@ -21,7 +21,7 @@ module.exports = defineConfig({
   fullyParallel: true,
   reporter: [['list'], ['html', { open: 'never', outputFolder: 'report' }]],
   use: {
-    baseURL: 'file:///' + path.resolve(__dirname, '..', 'college-prototype.html').replace(/\\/g, '/'),
+    baseURL: 'file:///' + path.resolve(__dirname, '..', 'index.html').replace(/\\/g, '/'),
     launchOptions: executablePath ? { executablePath } : {},
     screenshot: 'only-on-failure',
   },

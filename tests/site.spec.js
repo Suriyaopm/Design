@@ -2,7 +2,7 @@
 const { test, expect } = require('@playwright/test');
 const path = require('path');
 
-const URL = 'file:///' + path.resolve(__dirname, '..', 'college-prototype.html').replace(/\\/g, '/');
+const URL = 'file:///' + path.resolve(__dirname, '..', 'index.html').replace(/\\/g, '/');
 const MAP_LINK = 'https://maps.app.goo.gl/oxEk7jyK31JKqSwg8';
 const PAGES = {
   home: 'St. Mary’s College of Education & Research Institute',
