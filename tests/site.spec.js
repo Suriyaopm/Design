@@ -259,10 +259,10 @@ test.describe('Hero slider', () => {
     expect(gap).toBeLessThan(6_000);
   });
 
-  test('slider: college photo first, then three education photos, no text on them', async ({ page }) => {
+  test('slider: college photo first, then three college photos, no text on them', async ({ page }) => {
     await open(page);
     const srcs = await page.locator('#track .slide:not([aria-hidden]) img.photo').evaluateAll(l => l.map(i => i.getAttribute('src')));
-    expect(srcs).toEqual(['assets/img/college-front-sym.webp', 'assets/img/slide-teaching.webp', 'assets/img/slide-students.webp', 'assets/img/slide-library.webp']);
+    expect(srcs).toEqual(['assets/img/college-front-sym.webp', 'assets/img/slide-convocation.webp', 'assets/img/slide-convocation-13.webp', 'assets/img/slide-classroom.webp']);
     const sizes = await page.locator('#track img.photo').evaluateAll(l => Promise.all(l.map(async i => { await i.decode().catch(() => {}); return i.naturalWidth; })));
     expect(sizes.every(w => w >= 1900)).toBe(true);
     // no visible caption text over the photos (the page heading is kept for screen readers only)
@@ -385,6 +385,7 @@ test.describe('Gallery albums', () => {
 
   test('a photo opens full size with caption and counter; arrows, X, Escape and backdrop work', async ({ page }) => {
     await open(page, 'gallery');
+    expect(await page.locator('#galGrid [data-album="celebrations"] img').getAttribute('src')).toBe('assets/img/gallery/celebrations/celebrations-02-t.webp'); // Christmas stage photo is the cover
     await page.locator('#galGrid [data-album="celebrations"]').click();
     await page.locator('#albGrid .ph-t').first().click();
     const lb = page.locator('#lightbox');
