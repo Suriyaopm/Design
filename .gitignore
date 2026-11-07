@@ -4,3 +4,14 @@ playwright-report/
 *.log
 docs/
 tests/report/
+
+# Original camera photos (hundreds of MB). The website uses the
+# compressed copies in assets/img/gallery/ instead.
+assets/img/campus/
+assets/img/celebration/
+assets/img/convocation/
+assets/img/group_photos/
+assets/img/inspection/
+assets/img/library/
+assets/img/teaching/
+assets/img/college-front-symmetric.png

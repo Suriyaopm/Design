@@ -262,14 +262,17 @@ test.describe('Hero slider', () => {
   test('slider: college photo first, then three education photos, no text on them', async ({ page }) => {
     await open(page);
     const srcs = await page.locator('#track .slide:not([aria-hidden]) img.photo').evaluateAll(l => l.map(i => i.getAttribute('src')));
-    expect(srcs).toEqual(['assets/img/college-front-hd.webp', 'assets/img/slide-teaching.webp', 'assets/img/slide-students.webp', 'assets/img/slide-library.webp']);
+    expect(srcs).toEqual(['assets/img/college-front-sym.webp', 'assets/img/slide-teaching.webp', 'assets/img/slide-students.webp', 'assets/img/slide-library.webp']);
     const sizes = await page.locator('#track img.photo').evaluateAll(l => Promise.all(l.map(async i => { await i.decode().catch(() => {}); return i.naturalWidth; })));
-    expect(sizes.every(w => w === 2880)).toBe(true);
+    expect(sizes.every(w => w >= 1900)).toBe(true);
     // no visible caption text over the photos (the page heading is kept for screen readers only)
     const visibleText = await page.locator('#track .slide').evaluateAll(l => l.map(f => { const c = f.cloneNode(true); c.querySelectorAll('.sr-only').forEach(x => x.remove()); return c.textContent.trim(); }).filter(Boolean));
     expect(visibleText).toEqual([]);
     const ratio = await page.locator('#track .slide').first().evaluate(e => e.getBoundingClientRect().width / e.getBoundingClientRect().height);
-    if (page.viewportSize().width > 640) expect(Math.abs(ratio - 3)).toBeLessThan(0.05); // same 3:1 shape as the photos, so nothing is cropped
+    const want = page.viewportSize().width > 640 ? 3 : 1; // full 3:1 photo on desktop, square on phones
+    expect(Math.abs(ratio - want)).toBeLessThan(0.05);
+    await expect(page.locator('.hero .count')).toBeHidden(); // no 01 / 04 counter on screen
+    await expect(page.locator('#slNext')).toBeVisible();
   });
 });
 
@@ -325,72 +328,110 @@ test.describe('Animated counters', () => {
   });
 });
 
-test.describe('Events gallery', () => {
-  test('home shows an Events Gallery with 2 large and 3 small photos and an Explore More link', async ({ page }) => {
-    await open(page);
-    const sec = page.locator('#home-gallery');
-    await expect(sec.locator('h2')).toHaveText(/Events Gallery/i);
-    await expect(sec.locator('.ev')).toHaveCount(5);
-    await expect(sec.locator('a.ev-more')).toHaveAttribute('href', '#gallery');
-    if (page.viewportSize().width > 900) {
-      const w = await sec.locator('.ev').evaluateAll(l => l.map(e => Math.round(e.getBoundingClientRect().width)));
-      expect(w[0]).toBe(w[1]);
-      expect(w[0]).toBeGreaterThan(w[2] * 1.4); // first row is wider than the three below
-      expect(new Set(w.slice(2)).size).toBe(1);
-    }
-    await sec.locator('a.ev-more').click();
-    await expect(visiblePage(page)).toHaveAttribute('data-page', 'gallery');
-    await expect(page.locator('#galGrid .ev')).toHaveCount(8);
+test.describe('Gallery albums', () => {
+  const ALBUMS = { convocation: 56, celebrations: 8, inspection: 12, 'group-photos': 3, library: 11, campus: 6, teaching: 6 };
+
+  test('gallery page lists all seven albums with their cover photos', async ({ page }) => {
+    await open(page, 'gallery');
+    const tiles = page.locator('#galGrid [data-album]');
+    await expect(tiles).toHaveCount(7);
+    expect(await tiles.evaluateAll(l => l.map(t => t.dataset.album))).toEqual(Object.keys(ALBUMS));
+    await expect(page.locator('#galTotal')).toHaveText('7 albums · 102 photos');
+    const ok = await tiles.locator('img').evaluateAll(l => Promise.all(l.map(i => i.decode().then(() => i.naturalWidth > 0, () => false))));
+    expect(ok.every(Boolean)).toBe(true);
+    await expect(page.locator('#galGrid [data-album="convocation"] .ov')).toContainText('56 photos');
   });
 
-  test('hovering a photo reveals the event name and View More', async ({ page }, ti) => {
+  test('album names appear only on hover, over a blurred photo', async ({ page }, ti) => {
     test.skip(isMobile(ti), 'hover is a desktop interaction');
     await open(page, 'gallery');
-    const tile = page.locator('#galGrid .ev').first();
-    const ov = tile.locator('.ov');
+    const tile = page.locator('#galGrid [data-album="celebrations"]');
     await page.mouse.move(2, 2);
-    await expect.poll(() => ov.evaluate(e => +getComputedStyle(e).opacity)).toBe(0);
+    expect(await tile.locator('.ov').evaluate(e => +getComputedStyle(e).opacity)).toBe(0);
     await tile.hover();
-    await expect.poll(() => ov.evaluate(e => +getComputedStyle(e).opacity)).toBe(1);
-    await expect(ov).toContainText('Graduation Day');
-    await expect(ov).toContainText('View More');
+    await expect.poll(() => tile.locator('.ov').evaluate(e => +getComputedStyle(e).opacity)).toBe(1);
+    await expect.poll(() => tile.locator('img').evaluate(e => getComputedStyle(e).filter)).toContain('blur');
+    await expect(tile.locator('.ov b')).toHaveText('Celebrations');
   });
 
-  test('event names stay readable on touch screens without hovering', async ({ page }, ti) => {
-    test.skip(!isMobile(ti), 'touch only');
-    await open(page);
-    const ov = page.locator('#home-gallery .ev .ov').first();
-    expect(await ov.evaluate(e => +getComputedStyle(e).opacity)).toBe(1);
-    await expect(ov).toContainText('Graduation Day');
-  });
-
-  test('a photo opens full size, steps through and closes with the X button', async ({ page }) => {
+  test('opening an album shows every photo in it, and Back returns to the albums', async ({ page }) => {
     await open(page, 'gallery');
-    await page.locator('#galGrid .ev').first().click();
+    for (const [id, n] of Object.entries(ALBUMS)) {
+      await page.locator(`#galGrid [data-album="${id}"]`).click();
+      await expect(page.locator('#galAlbum')).toBeVisible();
+      await expect(page.locator('#albGrid .ph-t')).toHaveCount(n);
+      await page.locator('#albBack').click();
+      await expect(page.locator('#galAlbums')).toBeVisible();
+    }
+  });
+
+  test('convocation album filters by 11th, 12th and 13th convocation', async ({ page }) => {
+    await open(page, 'gallery');
+    await page.locator('#galGrid [data-album="convocation"]').click();
+    const tabs = page.locator('#albTabs button');
+    await expect(tabs).toHaveText(['All', '11th Convocation', '12th Convocation', '13th Convocation']);
+    for (const [sub, n] of [['11th', 4], ['12th', 23], ['13th', 26]]) {
+      await page.locator(`#albTabs [data-sub="${sub}"]`).click();
+      await expect(page.locator('#albGrid .ph-t')).toHaveCount(n);
+      await expect(page.locator('#albTitle')).toHaveText(`Convocation · ${sub} Convocation`);
+    }
+    await page.locator('#albTabs [data-sub=""]').click();
+    await expect(page.locator('#albGrid .ph-t')).toHaveCount(56);
+    // albums without sub-sets have no tabs
+    await page.locator('#albBack').click();
+    await page.locator('#galGrid [data-album="library"]').click();
+    await expect(page.locator('#albTabs')).toBeHidden();
+  });
+
+  test('a photo opens full size with caption and counter; arrows, X, Escape and backdrop work', async ({ page }) => {
+    await open(page, 'gallery');
+    await page.locator('#galGrid [data-album="celebrations"]').click();
+    await page.locator('#albGrid .ph-t').first().click();
     const lb = page.locator('#lightbox');
     await expect(lb).toBeVisible();
     await expect(page.locator('#lbCount')).toHaveText('1 / 8');
-    await expect(page.locator('#lbCap')).toHaveText('Graduation Day');
+    await expect(page.locator('#lbCap')).toHaveText('Christmas celebration');
+    expect(await page.locator('#lbImg').evaluate(i => i.decode().then(() => i.naturalWidth >= 1000))).toBe(true); // full-size image, not the thumbnail
     await page.locator('#lbNext').click();
     await expect(page.locator('#lbCount')).toHaveText('2 / 8');
     await page.locator('#lbPrev').click();
     await page.locator('#lbPrev').click();
     await expect(page.locator('#lbCount')).toHaveText('8 / 8');
-    expect(await page.locator('#lbImg').evaluate(i => i.decode().then(() => i.naturalWidth > 0))).toBe(true);
     await page.locator('#lbClose').click();
+    await expect(lb).toBeHidden();
+    await page.locator('#albGrid .ph-t').nth(2).click();
+    await page.keyboard.press('Escape');
+    await expect(lb).toBeHidden();
+    await page.locator('#albGrid .ph-t').nth(2).click();
+    await page.mouse.click(8, 300);
     await expect(lb).toBeHidden();
   });
 
-  test('home gallery opens the same viewer; Escape and backdrop close it', async ({ page }) => {
+  test('home shows five album covers; clicking one opens that album on the Gallery page', async ({ page }) => {
     await open(page);
-    await page.locator('#home-gallery .ev').nth(2).click();
-    await expect(page.locator('#lightbox')).toBeVisible();
-    await expect(page.locator('#lbCount')).toHaveText('3 / 5');
-    await page.keyboard.press('Escape');
-    await expect(page.locator('#lightbox')).toBeHidden();
-    await page.locator('#home-gallery .ev').nth(0).click();
-    await page.mouse.click(8, 300);
-    await expect(page.locator('#lightbox')).toBeHidden();
+    const sec = page.locator('#home-gallery');
+    await expect(sec.locator('h2')).toHaveText(/Events Gallery/i);
+    await expect(sec.locator('[data-album]')).toHaveCount(5);
+    if (page.viewportSize().width > 900) {
+      const w = await sec.locator('.ev').evaluateAll(l => l.map(e => Math.round(e.getBoundingClientRect().width)));
+      expect(w[0]).toBe(w[1]);
+      expect(w[0]).toBeGreaterThan(w[2] * 1.4);
+    }
+    await sec.locator('[data-album="inspection"]').click();
+    await expect(visiblePage(page)).toHaveAttribute('data-page', 'gallery');
+    await expect(page.locator('#galAlbum')).toBeVisible();
+    await expect(page.locator('#albTitle')).toHaveText('Inspection');
+    await expect(page.locator('#albGrid .ph-t')).toHaveCount(12);
+    await page.goto(URL + '#home', { waitUntil: 'domcontentloaded' });
+    await page.locator('#galMore').click();
+    await expect(page.locator('#galAlbums')).toBeVisible();
+  });
+
+  test('no stock event photos are left in the gallery', async ({ page }) => {
+    await open(page, 'gallery');
+    const html = await page.content();
+    expect(html).not.toContain('ev-graduation');
+    expect(html).not.toContain('Graduation Day');
   });
 });
 
