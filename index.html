@@ -865,6 +865,21 @@ ul.courses.plain{list-style:none;padding:0;margin:0 0 12px;display:grid;grid-tem
   .collage .est{bottom:60px}
 }
 .site-header.scrolled{box-shadow:0 6px 18px -14px rgb(0 0 0 / .5)}
+
+/* small satellite map in the footer */
+.footmap{position:relative;display:block;margin-top:18px;border-radius:10px;overflow:hidden;border:1px solid rgb(255 255 255 / .2);max-width:320px;text-decoration:none}
+.footmap-frame{display:block;width:100%;height:150px;border:0;pointer-events:none}
+.footmap-cta{position:absolute;right:8px;top:8px;display:inline-flex;align-items:center;gap:6px;background:rgb(0 0 0 / .62);color:#fff;font-size:.8rem;font-weight:700;padding:5px 10px;border-radius:999px}
+.footmap-cta .ico{width:14px;height:14px;color:var(--accent)}
+.footmap:hover .footmap-cta{background:var(--accent);color:var(--on-accent)}
+.footmap:hover .footmap-cta .ico{color:var(--on-accent)}
+@media (max-width:640px){.footmap{max-width:none}.footmap-frame{height:170px}}
+
+/* phones: counters sitting over the campus photo switch to white */
+@media (max-width:760px){
+  .statsphoto::after{content:"";position:absolute;left:0;right:0;bottom:0;height:55%;z-index:1;background:linear-gradient(transparent,rgb(0 0 0 / .45) 55%,rgb(0 0 0 / .55));pointer-events:none}
+  .counts2 .cnt:nth-child(n+3) strong,.counts2 .cnt:nth-child(n+3) .lbl{color:#fff;text-shadow:0 2px 10px rgb(0 0 0 / .65)}
+}
 </style>
 <script>var smp='maroon';try{smp=localStorage.getItem('sm-palette')||'maroon'}catch(e){}if(smp!=='teal')document.documentElement.dataset.palette='maroon';</script>
 
@@ -1492,6 +1507,10 @@ ul.courses.plain{list-style:none;padding:0;margin:0 0 12px;display:grid;grid-tem
           <div><svg class="ico"><use href="#i-mail"/></svg><span>st.maryscoed.cpt@gmail.com</span></div>
           <div><svg class="ico"><use href="#i-clock"/></svg><span>College begins at 9.30 am</span></div>
         </div>
+        <a class="footmap" href="https://maps.app.goo.gl/oxEk7jyK31JKqSwg8" target="_blank" rel="noopener" aria-label="Open the college location in Google Maps">
+          <iframe class="footmap-frame" title="Satellite view of St. Mary’s College of Education, Chengalpattu" loading="lazy" referrerpolicy="no-referrer-when-downgrade" tabindex="-1" data-satmap></iframe>
+          <span class="footmap-cta"><svg class="ico"><use href="#i-pin"/></svg> Get directions</span>
+        </a>
       </div>
     </div>
     <div class="fbase"><span>© 2026 St. Mary’s College of Education and Research Institute, Chengalpattu.</span><span>Anti-ragging · Grievance &amp; Redressal · Privacy policy</span></div>
@@ -1572,6 +1591,7 @@ const runHTML=arr=>[...arr,...arr].map(t=>`<span>${esc(t)}</span>`).join('');
 $('#admitRun').innerHTML=runHTML(ADMIT);
 $('#newsRun').innerHTML=runHTML([ADMIT[0],ADMIT[1],ADMIT[2],...NEWS]);
 $$('iframe[data-map]').forEach(f=>f.src=MAP_SRC);
+$$('iframe[data-satmap]').forEach(f=>f.src=MAP_SRC.replace('&z=15','&t=k&z=17'));
 
 /* ---------- Hero slider ---------- */
 (function(){

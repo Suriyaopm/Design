@@ -597,6 +597,26 @@ test.describe('Admission, contact and forms', () => {
     await expect(page.locator('iframe.mapframe')).toHaveCount(1);
   });
 
+  test('footer shows a small satellite map that opens Google Maps', async ({ page }) => {
+    await open(page);
+    const fm = page.locator('footer a.footmap');
+    await expect(fm).toHaveAttribute('href', MAP_LINK);
+    const src = await fm.locator('iframe').getAttribute('src');
+    expect(src).toContain('t=k'); // satellite view
+    expect(src).toContain('Chengalpattu');
+    const h = await fm.evaluate(e => e.getBoundingClientRect().height);
+    expect(h).toBeLessThan(200); // kept small
+  });
+
+  test('phones: counters over the campus photo are white', async ({ page }, ti) => {
+    test.skip(!isMobile(ti), 'mobile only');
+    await open(page);
+    const c = await page.locator('#home-stats .cnt').evaluateAll(l => l.map(e => getComputedStyle(e.querySelector('strong')).color));
+    expect(c[2]).toBe('rgb(255, 255, 255)');
+    expect(c[3]).toBe('rgb(255, 255, 255)');
+    expect(c[0]).not.toBe('rgb(255, 255, 255)'); // the top row sits on the light background
+  });
+
   test('back-to-top button appears after scrolling and works', async ({ page }) => {
     await open(page);
     await expect(page.locator('#toTop')).toBeHidden();
