@@ -617,6 +617,14 @@ test.describe('Admission, contact and forms', () => {
     expect(c[0]).not.toBe('rgb(255, 255, 255)'); // the top row sits on the light background
   });
 
+  test('the college crest is the favicon', async ({ page }) => {
+    await open(page);
+    const hrefs = await page.locator('link[rel="icon"], link[rel="apple-touch-icon"]').evaluateAll(l => l.map(e => e.getAttribute('href')));
+    expect(hrefs).toEqual(['assets/img/favicon-32.png', 'assets/img/favicon-48.png', 'assets/img/icon-192.png', 'assets/img/apple-touch-icon.png']);
+    const ok = await page.evaluate(srcs => Promise.all(srcs.map(s => new Promise(r => { const i = new Image(); i.onload = () => r(i.naturalWidth > 0); i.onerror = () => r(false); i.src = s; }))), hrefs);
+    expect(ok.every(Boolean)).toBe(true);
+  });
+
   test('back-to-top button appears after scrolling and works', async ({ page }) => {
     await open(page);
     await expect(page.locator('#toTop')).toBeHidden();
