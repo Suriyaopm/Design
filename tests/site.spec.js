@@ -625,6 +625,27 @@ test.describe('Admission, contact and forms', () => {
     expect(ok.every(Boolean)).toBe(true);
   });
 
+  test('sitemap.xml and robots.txt are valid and point to the live domain', async () => {
+    const fs = require('fs');
+    const root = path.resolve(__dirname, '..');
+    const xml = fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8');
+    expect(xml.startsWith('<?xml version="1.0" encoding="UTF-8"?>')).toBe(true);
+    expect(xml).toContain('<loc>https://www.stmaryschengaicoed.in/</loc>');
+    const imgs = [...xml.matchAll(/<image:loc>https:\/\/www\.stmaryschengaicoed\.in\/(.*?)<\/image:loc>/g)].map(m => m[1]);
+    expect(imgs.length).toBeGreaterThan(100);
+    expect(imgs.filter(f => !fs.existsSync(path.join(root, f)))).toEqual([]); // every listed photo exists
+    const robots = fs.readFileSync(path.join(root, 'robots.txt'), 'utf8');
+    expect(robots).toContain('Sitemap: https://www.stmaryschengaicoed.in/sitemap.xml');
+  });
+
+  test('page has a description and canonical link for search engines', async ({ page }) => {
+    await open(page);
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://www.stmaryschengaicoed.in/');
+    const d = await page.locator('meta[name="description"]').getAttribute('content');
+    expect(d).toContain('Chengalpattu');
+    expect(d.length).toBeLessThan(170);
+  });
+
   test('back-to-top button appears after scrolling and works', async ({ page }) => {
     await open(page);
     await expect(page.locator('#toTop')).toBeHidden();
