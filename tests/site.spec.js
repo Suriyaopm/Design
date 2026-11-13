@@ -630,6 +630,7 @@ test.describe('Admission, contact and forms', () => {
     const root = path.resolve(__dirname, '..');
     const xml = fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8');
     expect(xml.startsWith('<?xml version="1.0" encoding="UTF-8"?>')).toBe(true);
+    expect(fs.existsSync(path.join(root, 'sitemap.xsl'))).toBe(true); // styled view for people
     expect(xml).toContain('<loc>https://www.stmaryschengaicoed.in/</loc>');
     const imgs = [...xml.matchAll(/<image:loc>https:\/\/www\.stmaryschengaicoed\.in\/(.*?)<\/image:loc>/g)].map(m => m[1]);
     expect(imgs.length).toBeGreaterThan(100);
