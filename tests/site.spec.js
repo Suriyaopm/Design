@@ -39,8 +39,9 @@ const isMobile = testInfo => testInfo.project.name === 'mobile';
 test.describe('Loading and layout', () => {
   test('home loads without script errors', async ({ page }) => {
     const errors = await open(page);
-    await expect(page).toHaveTitle("St. Mary's College of Education and Research Institute");
-    await expect(visiblePage(page).locator('h1').first()).toContainText(PAGES.home);
+    await expect(page).toHaveTitle("St. Mary's College of Education, Chengalpattu – B.Ed. College");
+    await expect(page.locator('h1')).toHaveCount(1);
+    await expect(page.locator('h1')).toHaveText(/St\. Mary’s\s*College of Education & Research Institute,\s*Chengalpattu/);
     expect(errors).toEqual([]);
   });
 
@@ -57,7 +58,9 @@ test.describe('Loading and layout', () => {
       const errors = await open(page, hash);
       const vp = visiblePage(page);
       await expect(vp).toHaveAttribute('data-page', hash);
-      await expect(vp.locator('h1').first()).toContainText(heading);
+      if (hash === 'home') await expect(page.locator('h1')).toContainText('College of Education & Research Institute');
+      else await expect(vp.locator('h2.ph-title')).toHaveText(heading);
+      await expect(page.locator('h1')).toHaveCount(1); // the college name is the only h1 on every page
       const broken = await vp.locator('img').evaluateAll(imgs => Promise.all(imgs.map(async i => {
         await i.decode().catch(() => {});
         return i.naturalWidth > 0 ? null : i.getAttribute('src');
@@ -645,6 +648,18 @@ test.describe('Admission, contact and forms', () => {
     const d = await page.locator('meta[name="description"]').getAttribute('content');
     expect(d).toContain('Chengalpattu');
     expect(d.length).toBeLessThan(170);
+  });
+
+  test('search metadata: keywords, structured college details and a single h1', async ({ page }) => {
+    await open(page);
+    const kw = await page.locator('meta[name="keywords"]').getAttribute('content');
+    for (const k of ['B.Ed College Chengalpattu', 'Best B.Ed College in Chengalpattu', 'B.Ed College in Chengai', "St. Mary's B.Ed College Chengalpattu", 'BEd Chengalpattu']) expect(kw).toContain(k);
+    const ld = JSON.parse(await page.locator('script[type="application/ld+json"]').textContent());
+    expect(ld['@type']).toBe('CollegeOrUniversity');
+    expect(ld.address.addressLocality).toBe('Chengalpattu');
+    expect(ld.url).toBe('https://www.stmaryschengaicoed.in/');
+    await expect(page.locator('h1')).toHaveCount(1);
+    await expect(page.locator('.phead h2.ph-title')).toHaveCount(14);
   });
 
   test('back-to-top button appears after scrolling and works', async ({ page }) => {
