@@ -634,17 +634,17 @@ test.describe('Admission, contact and forms', () => {
     const xml = fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8');
     expect(xml.startsWith('<?xml version="1.0" encoding="UTF-8"?>')).toBe(true);
     expect(fs.existsSync(path.join(root, 'sitemap.xsl'))).toBe(true); // styled view for people
-    expect(xml).toContain('<loc>https://www.stmaryschengaicoed.in/</loc>');
-    const imgs = [...xml.matchAll(/<image:loc>https:\/\/www\.stmaryschengaicoed\.in\/(.*?)<\/image:loc>/g)].map(m => m[1]);
+    expect(xml).toContain('<loc>https://stmaryschengaicoed.in/</loc>');
+    const imgs = [...xml.matchAll(/<image:loc>https:\/\/stmaryschengaicoed\.in\/(.*?)<\/image:loc>/g)].map(m => m[1]);
     expect(imgs.length).toBeGreaterThan(100);
     expect(imgs.filter(f => !fs.existsSync(path.join(root, f)))).toEqual([]); // every listed photo exists
     const robots = fs.readFileSync(path.join(root, 'robots.txt'), 'utf8');
-    expect(robots).toContain('Sitemap: https://www.stmaryschengaicoed.in/sitemap.xml');
+    expect(robots).toContain('Sitemap: https://stmaryschengaicoed.in/sitemap.xml');
   });
 
   test('page has a description and canonical link for search engines', async ({ page }) => {
     await open(page);
-    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://www.stmaryschengaicoed.in/');
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://stmaryschengaicoed.in/');
     const d = await page.locator('meta[name="description"]').getAttribute('content');
     expect(d).toContain('Chengalpattu');
     expect(d.length).toBeLessThan(170);
@@ -657,7 +657,7 @@ test.describe('Admission, contact and forms', () => {
     const ld = JSON.parse(await page.locator('script[type="application/ld+json"]').textContent());
     expect(ld['@type']).toBe('CollegeOrUniversity');
     expect(ld.address.addressLocality).toBe('Chengalpattu');
-    expect(ld.url).toBe('https://www.stmaryschengaicoed.in/');
+    expect(ld.url).toBe('https://stmaryschengaicoed.in/');
     await expect(page.locator('h1')).toHaveCount(1);
     await expect(page.locator('.phead h2.ph-title')).toHaveCount(14);
   });
