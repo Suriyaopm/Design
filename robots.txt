@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://stmaryschengaicoed.in/sitemap.xml
+Sitemap: https://www.stmaryschengaicoed.in/sitemap.xml
